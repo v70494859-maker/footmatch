@@ -230,7 +230,7 @@ INSERT INTO auth.identities (id, user_id, provider_id, identity_data, provider, 
   (gen_random_uuid(),'00000000-0000-0000-0000-000000000198','00000000-0000-0000-0000-000000000198','{"sub":"00000000-0000-0000-0000-000000000198","email":"diego.fernandez@gmail.com"}','email',now(),now(),now()),
   (gen_random_uuid(),'00000000-0000-0000-0000-000000000199','00000000-0000-0000-0000-000000000199','{"sub":"00000000-0000-0000-0000-000000000199","email":"liam.nguyen@gmail.com"}','email',now(),now(),now()),
   (gen_random_uuid(),'00000000-0000-0000-0000-000000000200','00000000-0000-0000-0000-000000000200','{"sub":"00000000-0000-0000-0000-000000000200","email":"kevin.fernandes@gmail.com"}','email',now(),now(),now())
-ON CONFLICT ON CONSTRAINT identities_pkey DO NOTHING;
+ON CONFLICT (provider_id, provider) DO NOTHING;
 
 -- =====================================================
 -- PROFILES  (100 players + 2 operators + 1 admin)

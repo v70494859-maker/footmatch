@@ -266,6 +266,7 @@ CREATE TABLE match_player_stats (
   mvp          BOOLEAN NOT NULL DEFAULT false,
   yellow_card  BOOLEAN NOT NULL DEFAULT false,
   red_card     BOOLEAN NOT NULL DEFAULT false,
+  rating       SMALLINT CHECK (rating IS NULL OR rating BETWEEN 1 AND 5),
   CONSTRAINT unique_player_stats_per_match UNIQUE (match_id, user_id)
 );
 
