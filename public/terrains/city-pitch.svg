@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff6f00"/>
+      <stop offset="40%" stop-color="#e65100"/>
+      <stop offset="100%" stop-color="#1a237e"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#dusk)"/>
+  <!-- City skyline -->
+  <rect x="10" y="60" width="30" height="80" fill="#1a1a2e" opacity="0.8"/>
+  <rect x="15" y="65" width="6" height="8" fill="#ffd54f" opacity="0.5"/>
+  <rect x="27" y="75" width="6" height="8" fill="#ffd54f" opacity="0.3"/>
+  <rect x="50" y="40" width="25" height="100" fill="#16213e" opacity="0.8"/>
+  <rect x="55" y="45" width="5" height="6" fill="#ffd54f" opacity="0.4"/>
+  <rect x="65" y="55" width="5" height="6" fill="#ffd54f" opacity="0.5"/>
+  <rect x="85" y="70" width="35" height="70" fill="#1a1a2e" opacity="0.7"/>
+  <rect x="320" y="50" width="28" height="90" fill="#16213e" opacity="0.8"/>
+  <rect x="355" y="65" width="35" height="75" fill="#1a1a2e" opacity="0.7"/>
+  <!-- Synthetic pitch -->
+  <rect y="140" width="400" height="110" fill="#1b5e20"/>
+  <rect x="0" y="140" width="400" height="110" fill="#00c853" opacity="0.2"/>
+  <!-- Field lines -->
+  <rect x="25" y="148" width="350" height="94" fill="none" stroke="#fff" stroke-width="2" opacity="0.7" rx="2"/>
+  <line x1="200" y1="148" x2="200" y2="242" stroke="#fff" stroke-width="2" opacity="0.7"/>
+  <circle cx="200" cy="195" r="24" fill="none" stroke="#fff" stroke-width="2" opacity="0.7"/>
+  <!-- Fence -->
+  <line x1="0" y1="140" x2="400" y2="140" stroke="#78909c" stroke-width="3"/>
+  <line x1="25" y1="125" x2="25" y2="140" stroke="#78909c" stroke-width="2"/>
+  <line x1="100" y1="125" x2="100" y2="140" stroke="#78909c" stroke-width="2"/>
+  <line x1="175" y1="125" x2="175" y2="140" stroke="#78909c" stroke-width="2"/>
+  <line x1="250" y1="125" x2="250" y2="140" stroke="#78909c" stroke-width="2"/>
+  <line x1="325" y1="125" x2="325" y2="140" stroke="#78909c" stroke-width="2"/>
+  <line x1="25" y1="125" x2="325" y2="125" stroke="#78909c" stroke-width="1.5"/>
+  <line x1="25" y1="132" x2="325" y2="132" stroke="#78909c" stroke-width="1" opacity="0.6"/>
+  <!-- Floodlights -->
+  <rect x="45" y="80" width="3" height="60" fill="#78909c"/>
+  <circle cx="47" cy="78" r="6" fill="#ffd54f" opacity="0.9"/>
+  <circle cx="47" cy="78" r="15" fill="#ffd54f" opacity="0.1"/>
+  <rect x="352" y="80" width="3" height="60" fill="#78909c"/>
+  <circle cx="354" cy="78" r="6" fill="#ffd54f" opacity="0.9"/>
+  <circle cx="354" cy="78" r="15" fill="#ffd54f" opacity="0.1"/>
+</svg>

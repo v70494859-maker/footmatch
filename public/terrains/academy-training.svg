@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250">
+  <defs>
+    <linearGradient id="morningsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#64b5f6"/>
+      <stop offset="100%" stop-color="#bbdefb"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#morningsky)"/>
+  <!-- Sun -->
+  <circle cx="340" cy="45" r="25" fill="#ffd54f" opacity="0.9"/>
+  <circle cx="340" cy="45" r="35" fill="#ffd54f" opacity="0.15"/>
+  <!-- Clouds -->
+  <ellipse cx="100" cy="50" rx="35" ry="12" fill="#fff" opacity="0.6"/>
+  <ellipse cx="220" cy="35" rx="25" ry="10" fill="#fff" opacity="0.5"/>
+  <!-- Green grass -->
+  <rect y="130" width="400" height="120" fill="#43a047"/>
+  <!-- Training cones -->
+  <polygon points="80,180 85,165 90,180" fill="#ff6f00"/>
+  <polygon points="140,180 145,165 150,180" fill="#ff6f00"/>
+  <polygon points="200,180 205,165 210,180" fill="#ff6f00"/>
+  <polygon points="260,180 265,165 270,180" fill="#ff6f00"/>
+  <polygon points="320,180 325,165 330,180" fill="#ff6f00"/>
+  <!-- Mini goals -->
+  <rect x="30" y="155" width="3" height="35" fill="#fff" opacity="0.9"/>
+  <rect x="30" y="155" width="25" height="3" fill="#fff" opacity="0.9"/>
+  <rect x="52" y="155" width="3" height="35" fill="#fff" opacity="0.9"/>
+  <!-- Net -->
+  <line x1="33" y1="158" x2="33" y2="188" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <line x1="40" y1="158" x2="40" y2="188" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <line x1="47" y1="158" x2="47" y2="188" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <line x1="33" y1="165" x2="52" y2="165" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <line x1="33" y1="175" x2="52" y2="175" stroke="#fff" stroke-width="0.5" opacity="0.4"/>
+  <!-- Balls -->
+  <circle cx="160" cy="195" r="6" fill="#fff" stroke="#333" stroke-width="1"/>
+  <circle cx="250" cy="200" r="6" fill="#fff" stroke="#333" stroke-width="1"/>
+  <!-- FootMatch box -->
+  <rect x="340" y="175" width="35" height="25" fill="#1b5e20" rx="3"/>
+  <text x="357" y="191" font-size="6" fill="#fff" text-anchor="middle" font-family="sans-serif" font-weight="bold">FM</text>
+  <!-- Kid silhouettes -->
+  <circle cx="120" cy="145" r="5" fill="#333" opacity="0.5"/>
+  <rect x="117" y="150" width="6" height="12" fill="#333" opacity="0.5" rx="2"/>
+  <circle cx="190" cy="147" r="5" fill="#333" opacity="0.5"/>
+  <rect x="187" y="152" width="6" height="12" fill="#333" opacity="0.5" rx="2"/>
+  <circle cx="280" cy="143" r="5" fill="#333" opacity="0.5"/>
+  <rect x="277" y="148" width="6" height="12" fill="#333" opacity="0.5" rx="2"/>
+</svg>
