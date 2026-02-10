@@ -1,12 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useTranslation();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
 
   const navItems = [
     {
@@ -77,7 +88,7 @@ export default function AdminSidebar() {
             );
           })}
         </nav>
-        <div className="px-2 py-4 border-t border-surface-800">
+        <div className="px-2 py-4 border-t border-surface-800 space-y-1">
           <Link
             href="/matches"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-surface-400 hover:text-foreground hover:bg-surface-800 transition-colors"
@@ -87,6 +98,16 @@ export default function AdminSidebar() {
             </svg>
             {t.common.back}
           </Link>
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-danger-500 hover:bg-danger-500/10 transition-colors w-full"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
+            {loggingOut ? "..." : t.nav.logout}
+          </button>
         </div>
       </aside>
 
@@ -120,6 +141,15 @@ export default function AdminSidebar() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
         </Link>
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-danger-500 hover:bg-danger-500/10 whitespace-nowrap transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+        </button>
       </div>
     </>
   );
