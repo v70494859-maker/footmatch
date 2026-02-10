@@ -1,6 +1,12 @@
 import { stripe } from "./config";
+import { headers } from "next/headers";
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+async function getAppUrl(): Promise<string> {
+  const h = await headers();
+  const host = h.get("host") || "www.footmatch.ch";
+  const proto = h.get("x-forwarded-proto") || "https";
+  return `${proto}://${host}`;
+}
 
 /**
  * Creates a Stripe Checkout session in subscription mode.
@@ -14,6 +20,8 @@ export async function createSubscriptionCheckoutSession({
   priceId: string;
   profileId: string;
 }) {
+  const appUrl = await getAppUrl();
+
   const session = await stripe().checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
