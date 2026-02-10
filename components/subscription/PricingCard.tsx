@@ -44,7 +44,17 @@ export default function PricingCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-surface-800 bg-surface-900 p-8 max-w-sm w-full">
+    <div className="rounded-2xl border border-surface-800 bg-surface-900 p-8 max-w-sm w-full relative overflow-hidden">
+      {/* Trial badge */}
+      <div className="flex justify-center mb-4">
+        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full bg-pitch-500/15 text-pitch-400 border border-pitch-500/30">
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {t.subscription.trialBadge}
+        </span>
+      </div>
+
       <div className="text-center mb-6">
         <h3 className="text-lg font-semibold text-foreground mb-1">
           {t.subscription.premium}
@@ -54,12 +64,16 @@ export default function PricingCard() {
         </p>
       </div>
 
-      <div className="text-center mb-8">
+      <div className="text-center mb-2">
         <span className="text-4xl font-bold text-foreground">
           {formatPrice(SUBSCRIPTION_PRICE, SUBSCRIPTION_CURRENCY)}
         </span>
         <span className="text-surface-400 text-sm ml-1">{t.common.perMonth}</span>
       </div>
+
+      <p className="text-center text-pitch-400 text-xs font-medium mb-6">
+        {t.subscription.trialInfo}
+      </p>
 
       <ul className="space-y-3 mb-8">
         {FEATURES.map((feature) => (
