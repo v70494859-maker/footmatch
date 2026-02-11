@@ -1,4 +1,6 @@
 const APP_URL = "https://www.footmatch.ch";
+const INSTAGRAM_URL = "https://instagram.com/footmatch.ch";
+const TIKTOK_URL = "https://tiktok.com/@footmatch.ch";
 
 // ─── Layout ──────────────────────────────────────────────────
 function layout(body: string): string {
@@ -13,24 +15,58 @@ function layout(body: string): string {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#030712;">
     <tr>
       <td align="center" style="padding:40px 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background-color:#111827;border-radius:16px;border:1px solid #1f2937;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
           <!-- Header -->
           <tr>
-            <td style="padding:32px 32px 0;text-align:center;">
-              <span style="font-size:24px;font-weight:800;color:#4ade80;letter-spacing:-0.5px;">Foot</span><span style="font-size:24px;font-weight:800;color:#f9fafb;letter-spacing:-0.5px;">Match</span>
+            <td style="padding:0 0 24px;text-align:center;">
+              <span style="font-size:28px;font-weight:800;color:#4ade80;letter-spacing:-0.5px;">Foot</span><span style="font-size:28px;font-weight:800;color:#f9fafb;letter-spacing:-0.5px;">Match</span>
+              <p style="margin:4px 0 0;font-size:12px;color:#6b7280;letter-spacing:1px;text-transform:uppercase;">Trouve ton match, rejoins le terrain</p>
             </td>
           </tr>
-          <!-- Body -->
+          <!-- Card -->
           <tr>
-            <td style="padding:24px 32px 32px;">
-              ${body}
+            <td>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111827;border-radius:16px;border:1px solid #1f2937;">
+                <!-- Body -->
+                <tr>
+                  <td style="padding:32px;">
+                    ${body}
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <!-- Footer -->
           <tr>
-            <td style="padding:0 32px 32px;text-align:center;border-top:1px solid #1f2937;padding-top:24px;">
+            <td style="padding:32px 16px 0;text-align:center;">
+              <!-- Social links -->
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 16px;">
+                <tr>
+                  <td style="padding:0 8px;">
+                    <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;line-height:36px;text-align:center;background-color:#1f2937;border-radius:50%;text-decoration:none;font-size:16px;" title="Instagram">&#128247;</a>
+                  </td>
+                  <td style="padding:0 8px;">
+                    <a href="${TIKTOK_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;line-height:36px;text-align:center;background-color:#1f2937;border-radius:50%;text-decoration:none;font-size:16px;" title="TikTok">&#127908;</a>
+                  </td>
+                </tr>
+              </table>
+              <!-- Divider -->
+              <div style="width:40px;height:2px;background-color:#4ade80;margin:0 auto 16px;border-radius:1px;"></div>
+              <!-- Info -->
               <p style="margin:0;font-size:12px;color:#6b7280;">FootMatch &mdash; La plateforme des matchs de foot</p>
-              <p style="margin:4px 0 0;font-size:11px;color:#4b5563;">www.footmatch.ch</p>
+              <p style="margin:4px 0 0;font-size:11px;color:#4b5563;">Gen&egrave;ve, Suisse</p>
+              <p style="margin:12px 0 0;">
+                <a href="${APP_URL}" target="_blank" style="font-size:11px;color:#4ade80;text-decoration:none;">www.footmatch.ch</a>
+              </p>
+              <!-- Legal -->
+              <p style="margin:16px 0 0;font-size:10px;color:#374151;line-height:1.5;">
+                <a href="${APP_URL}/privacy" target="_blank" style="color:#4b5563;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+                &nbsp;&middot;&nbsp;
+                <a href="${APP_URL}/terms" target="_blank" style="color:#4b5563;text-decoration:underline;">Conditions d'utilisation</a>
+              </p>
+              <p style="margin:8px 0 0;font-size:10px;color:#374151;">
+                Tu re&ccedil;ois cet email car tu es inscrit sur FootMatch.
+              </p>
             </td>
           </tr>
         </table>
