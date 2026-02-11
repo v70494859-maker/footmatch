@@ -52,6 +52,13 @@ export default function OnboardingWizard({ userId, userEmail, defaultName }: Pro
 
       if (profileError) throw profileError;
 
+      // Fire-and-forget welcome email
+      fetch("/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "welcome" }),
+      }).catch(() => {});
+
       router.push("/matches");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

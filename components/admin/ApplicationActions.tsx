@@ -61,6 +61,16 @@ export default function ApplicationActions({
       return;
     }
 
+    // Fire-and-forget approval email
+    fetch("/api/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "application_approved",
+        data: { profileId },
+      }),
+    }).catch(() => {});
+
     router.refresh();
     router.push("/admin/applications");
   }
@@ -85,6 +95,16 @@ export default function ApplicationActions({
       setLoading(false);
       return;
     }
+
+    // Fire-and-forget rejection email
+    fetch("/api/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "application_rejected",
+        data: { profileId, rejectionReason: rejectionReason.trim() },
+      }),
+    }).catch(() => {});
 
     router.refresh();
     router.push("/admin/applications");

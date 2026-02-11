@@ -78,6 +78,13 @@ export default function RegisterButton({
       return;
     }
 
+    // Fire-and-forget registration email
+    fetch("/api/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "match_registration", data: { matchId } }),
+    }).catch(() => {});
+
     setLoading(false);
     router.refresh();
   }

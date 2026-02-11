@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       // Look up the profile by stripe_customer_id
       const { data: profile } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, email, first_name")
         .eq("stripe_customer_id", customerId)
         .single();
 
@@ -82,6 +82,17 @@ export async function POST(req: NextRequest) {
           body: "Welcome to FootMatch Premium. You can now join unlimited matches.",
           data: {},
         });
+
+        // Send subscription email
+        if (profile.email) {
+          const { sendSubscriptionCreatedEmail } = await import(
+            "@/lib/email/send"
+          );
+          await sendSubscriptionCreatedEmail(
+            profile.email,
+            profile.first_name || ""
+          );
+        }
       }
 
       break;
@@ -94,7 +105,7 @@ export async function POST(req: NextRequest) {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, email, first_name")
         .eq("stripe_customer_id", customerId)
         .single();
 
@@ -121,6 +132,17 @@ export async function POST(req: NextRequest) {
         body: "Your FootMatch Premium subscription has been canceled.",
         data: {},
       });
+
+      // Send cancellation email
+      if (profile.email) {
+        const { sendSubscriptionCanceledEmail } = await import(
+          "@/lib/email/send"
+        );
+        await sendSubscriptionCanceledEmail(
+          profile.email,
+          profile.first_name || ""
+        );
+      }
 
       break;
     }

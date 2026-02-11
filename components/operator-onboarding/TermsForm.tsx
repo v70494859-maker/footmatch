@@ -41,6 +41,13 @@ export default function TermsForm({ application }: Props) {
 
       if (updateError) throw updateError;
 
+      // Fire-and-forget application submitted email
+      fetch("/api/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "application_submitted" }),
+      }).catch(() => {});
+
       router.push("/operator-onboarding/waiting");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
