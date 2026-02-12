@@ -16,12 +16,20 @@ const PRESET_COLORS: Record<string, string> = {
   cyan: "bg-cyan-500",
 };
 
+const AVATAR_COLORS = [
+  "bg-pitch-600", "bg-blue-600", "bg-purple-600", "bg-amber-600",
+  "bg-cyan-600", "bg-pink-600", "bg-red-600", "bg-green-600",
+];
+
 interface TeamCardProps {
   team: SocialTeam;
   myRole: TeamRole;
+  memberAvatars?: { first_name: string; last_name: string; avatar_url: string | null }[];
+  challengeCount?: number;
+  captainName?: string;
 }
 
-export default function TeamCard({ team, myRole }: TeamCardProps) {
+export default function TeamCard({ team, myRole, memberAvatars, challengeCount, captainName }: TeamCardProps) {
   const { t } = useTranslation();
 
   const initials = team.name
@@ -81,6 +89,12 @@ export default function TeamCard({ team, myRole }: TeamCardProps) {
             {roleLabel}
           </span>
         </div>
+
+        {/* Description */}
+        {team.description && (
+          <p className="text-xs text-surface-500 line-clamp-1 mt-0.5">{team.description}</p>
+        )}
+
         <div className="flex items-center gap-3 mt-1">
           {team.city && (
             <span className="text-xs text-surface-500 flex items-center gap-1">
@@ -97,7 +111,46 @@ export default function TeamCard({ team, myRole }: TeamCardProps) {
             </svg>
             {team.member_count} {team.member_count === 1 ? t.social.teams.member : t.social.teams.members}
           </span>
+          {/* Challenge count */}
+          {challengeCount != null && challengeCount > 0 && (
+            <span className="text-xs text-amber-400 flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-4.5A3.375 3.375 0 0012.75 10.5h-.75a.75.75 0 01-.75-.75V6.75a3 3 0 116 0v3a.75.75 0 01-.75.75h-.75A3.375 3.375 0 0012 14.25v4.5m-3-9V6.75a3 3 0 00-3-3 3 3 0 00-3 3v3a.75.75 0 00.75.75h.75A3.375 3.375 0 019 14.25v4.5" />
+              </svg>
+              {challengeCount}
+            </span>
+          )}
         </div>
+
+        {/* Member avatars */}
+        {memberAvatars && memberAvatars.length > 0 && (
+          <div className="flex items-center mt-1.5">
+            {memberAvatars.slice(0, 4).map((member, idx) => {
+              const memberInitial = (member.first_name?.[0] ?? "").toUpperCase();
+              const colorClass = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+              return member.avatar_url ? (
+                <img
+                  key={idx}
+                  src={member.avatar_url}
+                  alt={`${member.first_name} ${member.last_name}`}
+                  className={`w-6 h-6 rounded-full object-cover border-2 border-surface-900 ${idx > 0 ? "-ml-1.5" : ""}`}
+                />
+              ) : (
+                <div
+                  key={idx}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white border-2 border-surface-900 ${colorClass} ${idx > 0 ? "-ml-1.5" : ""}`}
+                >
+                  {memberInitial}
+                </div>
+              );
+            })}
+            {team.member_count > 4 && (
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-medium text-surface-400 bg-surface-800 border-2 border-surface-900 -ml-1.5">
+                +{team.member_count - 4}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Arrow */}

@@ -5,6 +5,9 @@ import Link from "next/link";
 import type { FriendshipWithProfile, Profile } from "@/types";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import { createClient } from "@/lib/supabase/client";
+import { getClubLogo } from "@/lib/clubs";
+import { getFlagForCountry } from "@/lib/cities";
+import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import AddFriendButton from "./AddFriendButton";
 
 interface FriendsListProps {
@@ -12,6 +15,60 @@ interface FriendsListProps {
   friends: FriendshipWithProfile[];
   getFriendProfile: (f: FriendshipWithProfile) => Profile;
   onRemoveFriend: (friendshipId: string) => void;
+}
+
+function FriendAvatar({ profile }: { profile: Profile }) {
+  if (profile.avatar_url) {
+    return (
+      <img
+        src={profile.avatar_url}
+        alt={`${profile.first_name} ${profile.last_name}`}
+        className="w-10 h-10 rounded-full object-cover"
+      />
+    );
+  }
+  return (
+    <ProfileAvatar
+      firstName={profile.first_name}
+      lastName={profile.last_name}
+      size="md"
+    />
+  );
+}
+
+function FriendInfo({ profile }: { profile: Profile }) {
+  const flag = getFlagForCountry(profile.origin_country);
+
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-1.5">
+        <p className="text-sm font-medium text-surface-100 truncate">
+          {profile.first_name} {profile.last_name}
+        </p>
+        {flag && <span className="text-sm shrink-0">{flag}</span>}
+      </div>
+      <div className="flex items-center gap-2 mt-0.5">
+        {profile.city && (
+          <span className="text-xs text-surface-500 flex items-center gap-0.5">
+            <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            {profile.city}
+          </span>
+        )}
+        {profile.favorite_club && (
+          <span className="flex items-center gap-1 text-xs text-surface-500">
+            <img
+              src={getClubLogo(profile.favorite_club)}
+              alt={profile.favorite_club}
+              className="w-4 h-4 inline object-contain"
+            />
+          </span>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default function FriendsList({ userId, friends, getFriendProfile, onRemoveFriend }: FriendsListProps) {
@@ -58,9 +115,6 @@ export default function FriendsList({ userId, friends, getFriendProfile, onRemov
 
   const friendIds = new Set(friends.map((f) => getFriendProfile(f).id));
 
-  const getInitials = (p: Profile) =>
-    `${p.first_name?.[0] ?? ""}${p.last_name?.[0] ?? ""}`.toUpperCase();
-
   return (
     <div>
       {/* Search input */}
@@ -87,17 +141,8 @@ export default function FriendsList({ userId, friends, getFriendProfile, onRemov
               .map((profile) => (
                 <div key={profile.id} className="flex items-center gap-3 bg-surface-900 border border-surface-800 rounded-xl p-3">
                   <Link href={`/players/${profile.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                    {profile.avatar_url ? (
-                      <img src={profile.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-pitch-900 flex items-center justify-center text-pitch-400 text-sm font-semibold">
-                        {getInitials(profile)}
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-surface-100 truncate">{profile.first_name} {profile.last_name}</p>
-                      {profile.city && <p className="text-xs text-surface-500">{profile.city}</p>}
-                    </div>
+                    <FriendAvatar profile={profile} />
+                    <FriendInfo profile={profile} />
                   </Link>
                   <AddFriendButton targetUserId={profile.id} currentUserId={userId} />
                 </div>
@@ -118,17 +163,8 @@ export default function FriendsList({ userId, friends, getFriendProfile, onRemov
             return (
               <div key={friendship.id} className="flex items-center gap-3 bg-surface-900 border border-surface-800 rounded-xl p-3">
                 <Link href={`/players/${profile.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                  {profile.avatar_url ? (
-                    <img src={profile.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-pitch-900 flex items-center justify-center text-pitch-400 text-sm font-semibold">
-                      {getInitials(profile)}
-                    </div>
-                  )}
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-surface-100 truncate">{profile.first_name} {profile.last_name}</p>
-                    {profile.city && <p className="text-xs text-surface-500">{profile.city}</p>}
-                  </div>
+                  <FriendAvatar profile={profile} />
+                  <FriendInfo profile={profile} />
                 </Link>
                 <button
                   onClick={() => handleRemove(friendship.id)}

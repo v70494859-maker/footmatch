@@ -39,6 +39,33 @@ export default async function TeamRoute({ params }: { params: Promise<{ id: stri
     friends = (friendships ?? []).map((f: any) => f.requester_id === user.id ? f.addressee : f.requester);
   }
 
+  // Fetch gamification data for all members
+  const memberIds = team.team_members.map((m: any) => m.user_id);
+  const { data: memberGamification } = await supabase
+    .from("player_gamification")
+    .select("user_id, level, total_xp")
+    .in("user_id", memberIds);
+
+  // Fetch 3 most recent challenges involving this team
+  const { data: recentChallenges } = await supabase
+    .from("team_challenges")
+    .select("*, challenger_team:teams!team_challenges_challenger_team_id_fkey(id, name, crest_url, crest_preset, member_count), challenged_team:teams!team_challenges_challenged_team_id_fkey(id, name, crest_url, crest_preset, member_count)")
+    .or(`challenger_team_id.eq.${id},challenged_team_id.eq.${id}`)
+    .order("created_at", { ascending: false })
+    .limit(3);
+
+  // Fetch team challenge stats
+  const { count: totalChallenges } = await supabase
+    .from("team_challenges")
+    .select("id", { count: "exact", head: true })
+    .or(`challenger_team_id.eq.${id},challenged_team_id.eq.${id}`);
+
+  const { count: wonChallenges } = await supabase
+    .from("team_challenges")
+    .select("id", { count: "exact", head: true })
+    .or(`challenger_team_id.eq.${id},challenged_team_id.eq.${id}`)
+    .eq("status", "completed");
+
   return (
     <TeamDetailPage
       team={team}
@@ -46,6 +73,10 @@ export default async function TeamRoute({ params }: { params: Promise<{ id: stri
       isMember={isMember}
       myRole={myRole}
       friends={friends}
+      memberGamification={memberGamification ?? []}
+      recentChallenges={recentChallenges ?? []}
+      totalChallenges={totalChallenges ?? 0}
+      wonChallenges={wonChallenges ?? 0}
     />
   );
 }

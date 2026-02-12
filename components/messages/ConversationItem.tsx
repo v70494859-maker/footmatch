@@ -21,6 +21,8 @@ interface ConversationItemProps {
         first_name: string;
         last_name: string;
         avatar_url: string | null;
+        origin_country?: string | null;
+        favorite_club?: string | null;
       };
     }[];
   };
@@ -66,11 +68,19 @@ export default function ConversationItem({
     >
       {/* Avatar */}
       {conversation.type === "direct" && otherUser ? (
-        <ProfileAvatar
-          firstName={otherUser.first_name}
-          lastName={otherUser.last_name}
-          size="md"
-        />
+        otherUser.avatar_url ? (
+          <img
+            src={otherUser.avatar_url}
+            alt=""
+            className="w-10 h-10 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <ProfileAvatar
+            firstName={otherUser.first_name}
+            lastName={otherUser.last_name}
+            size="md"
+          />
+        )
       ) : (
         <div className="w-10 h-10 rounded-full bg-surface-700 flex items-center justify-center shrink-0">
           <svg
@@ -116,7 +126,7 @@ export default function ConversationItem({
 
       {/* Unread dot */}
       {hasUnread && (
-        <div className="w-2.5 h-2.5 rounded-full bg-pitch-400 shrink-0" />
+        <div className="w-3 h-3 rounded-full bg-pitch-400 shrink-0 animate-pulse" />
       )}
     </Link>
   );

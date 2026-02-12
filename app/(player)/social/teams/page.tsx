@@ -31,12 +31,63 @@ export default async function TeamsRoute() {
     .eq("invitee_id", user.id)
     .eq("status", "pending");
 
+  // Build team list with roles
+  const teams = (memberships ?? []).map((m: any) => ({ ...m.team, myRole: m.role }));
+
+  // Fetch member avatars for each team (up to 4 per team)
+  const teamIds = teams.map((t: any) => t.id);
+  let teamMemberAvatars: Record<string, { first_name: string; last_name: string; avatar_url: string | null }[]> = {};
+
+  if (teamIds.length > 0) {
+    const { data: allMembers } = await supabase
+      .from("team_members")
+      .select("team_id, profile:profiles(first_name, last_name, avatar_url)")
+      .in("team_id", teamIds)
+      .order("joined_at", { ascending: true });
+
+    if (allMembers) {
+      for (const member of allMembers) {
+        const tid = member.team_id;
+        if (!teamMemberAvatars[tid]) teamMemberAvatars[tid] = [];
+        if (teamMemberAvatars[tid].length < 4 && member.profile) {
+          teamMemberAvatars[tid].push(member.profile as any);
+        }
+      }
+    }
+  }
+
+  // Fetch challenge counts per team
+  let teamChallengeCounts: Record<string, number> = {};
+
+  if (teamIds.length > 0) {
+    // We need to count challenges for each team. Since Supabase doesn't support
+    // group-by easily in JS client, fetch all relevant challenges and count in JS.
+    const { data: challenges } = await supabase
+      .from("team_challenges")
+      .select("challenger_team_id, challenged_team_id")
+      .or(teamIds.map((id: string) => `challenger_team_id.eq.${id},challenged_team_id.eq.${id}`).join(","));
+
+    if (challenges) {
+      const teamIdSet = new Set(teamIds);
+      for (const c of challenges) {
+        if (teamIdSet.has(c.challenger_team_id)) {
+          teamChallengeCounts[c.challenger_team_id] = (teamChallengeCounts[c.challenger_team_id] ?? 0) + 1;
+        }
+        if (teamIdSet.has(c.challenged_team_id)) {
+          teamChallengeCounts[c.challenged_team_id] = (teamChallengeCounts[c.challenged_team_id] ?? 0) + 1;
+        }
+      }
+    }
+  }
+
   return (
     <TeamsPage
       userId={user.id}
       hasSignedCharter={!!charter}
-      teams={(memberships ?? []).map((m: any) => ({ ...m.team, myRole: m.role }))}
+      teams={teams}
       invitations={invitations ?? []}
+      teamMemberAvatars={teamMemberAvatars}
+      teamChallengeCounts={teamChallengeCounts}
     />
   );
 }

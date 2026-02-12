@@ -7,6 +7,9 @@ import { useTranslation } from "@/lib/i18n/LanguageContext";
 import PostMediaCarousel from "@/components/social/PostMediaCarousel";
 import PostLikeButton from "@/components/social/PostLikeButton";
 import PostComments from "@/components/social/PostComments";
+import ProfileAvatar from "@/components/ui/ProfileAvatar";
+import { getClubLogo } from "@/lib/clubs";
+import { getFlagForCountry } from "@/lib/cities";
 
 interface PostCardProps {
   post: PostWithDetails;
@@ -38,7 +41,6 @@ export default function PostCard({ post, currentUserId, onLikeToggle, onCommentA
   const [showComments, setShowComments] = useState(false);
 
   const author = post.author;
-  const initials = `${author?.first_name?.[0] ?? ""}${author?.last_name?.[0] ?? ""}`.toUpperCase();
 
   return (
     <div className="bg-surface-900 border border-surface-800 rounded-2xl overflow-hidden">
@@ -48,22 +50,36 @@ export default function PostCard({ post, currentUserId, onLikeToggle, onCommentA
           {author?.avatar_url ? (
             <img
               src={author.avatar_url}
-              alt={`${author.first_name} ${author.last_name}`}
+              alt=""
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-pitch-900 flex items-center justify-center text-pitch-400 text-sm font-semibold">
-              {initials}
-            </div>
+            <ProfileAvatar
+              firstName={author?.first_name ?? ""}
+              lastName={author?.last_name ?? ""}
+              size="md"
+            />
           )}
         </Link>
         <div className="flex-1 min-w-0">
-          <Link
-            href={`/players/${author?.id}`}
-            className="text-sm font-semibold text-surface-100 hover:text-pitch-400 transition-colors truncate block"
-          >
-            {author?.first_name} {author?.last_name}
-          </Link>
+          <div className="flex items-center gap-1.5">
+            <Link
+              href={`/players/${author?.id}`}
+              className="text-sm font-semibold text-surface-100 hover:text-pitch-400 transition-colors truncate"
+            >
+              {author?.first_name} {author?.last_name}
+            </Link>
+            {author?.origin_country && getFlagForCountry(author.origin_country) && (
+              <span className="text-xs">{getFlagForCountry(author.origin_country)}</span>
+            )}
+            {author?.favorite_club && (
+              <img
+                src={getClubLogo(author.favorite_club)}
+                alt=""
+                className="w-4 h-4 inline-block"
+              />
+            )}
+          </div>
           <div className="flex items-center gap-1.5 text-xs text-surface-500">
             {author?.city && <span>{author.city}</span>}
             {author?.city && <span>&middot;</span>}
@@ -97,17 +113,27 @@ export default function PostCard({ post, currentUserId, onLikeToggle, onCommentA
       {/* Like + comment counts */}
       {(post.like_count > 0 || post.comment_count > 0) && (
         <div className="flex items-center justify-between px-4 py-2 text-xs text-surface-500">
-          <span>
-            {post.like_count > 0
-              ? `${post.like_count} ${t.social.feed.like}${post.like_count > 1 ? "s" : ""}`
-              : ""}
+          <span className="flex items-center gap-1">
+            {post.like_count > 0 && (
+              <>
+                <svg className="w-3.5 h-3.5 text-red-400" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                </svg>
+                <span>
+                  {post.like_count} {t.social.feed.like}{post.like_count > 1 ? "s" : ""}
+                </span>
+              </>
+            )}
           </span>
           {post.comment_count > 0 && (
             <button
               onClick={() => setShowComments(!showComments)}
-              className="hover:text-surface-300 transition-colors"
+              className="flex items-center gap-1 hover:text-surface-300 transition-colors"
             >
-              {post.comment_count} {t.social.feed.comments.toLowerCase()}
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+              </svg>
+              <span>{post.comment_count} {t.social.feed.comments.toLowerCase()}</span>
             </button>
           )}
         </div>

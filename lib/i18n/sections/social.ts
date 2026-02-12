@@ -2,6 +2,13 @@ const social = {
   fr: {
     social: {
       title: "Social", hub: "Espace social",
+      hubStats: { level: "Niveau", xp: "XP", streak: "Série", matches: "Matchs", days: "jours" },
+      hubActions: { findFriends: "Trouver amis", createTeam: "Créer team", newPost: "Nouveau post" },
+      andMore: "et {count} autres",
+      createATeam: "Créer une team",
+      noPostsYet: "Aucune publication",
+      teamLeaderboard: "Classement de l'équipe",
+      viewAllChallenges: "Voir tous les défis",
       friends: {
         title: "Amis", myFriends: "Mes amis", requests: "Demandes",
         pendingRequests: "Demandes en attente", searchPlayers: "Rechercher des joueurs...",
@@ -24,6 +31,7 @@ const social = {
         invite: "Inviter", inviteFriends: "Inviter des amis",
         leaveTeam: "Quitter la team", dissolveTeam: "Dissoudre la team",
         noTeams: "Aucune team", noMembers: "Aucun membre",
+        challenges: "Défis", wins: "Victoires", avgLevel: "Niveau moyen",
         teamCreated: "Team créée !", inviteSent: "Invitation envoyée",
         inviteAccepted: "Invitation acceptée", inviteRejected: "Invitation refusée",
         charter: {
@@ -76,6 +84,13 @@ const social = {
   en: {
     social: {
       title: "Social", hub: "Social hub",
+      hubStats: { level: "Level", xp: "XP", streak: "Streak", matches: "Matches", days: "days" },
+      hubActions: { findFriends: "Find friends", createTeam: "Create team", newPost: "New post" },
+      andMore: "and {count} more",
+      createATeam: "Create a team",
+      noPostsYet: "No posts yet",
+      teamLeaderboard: "Team leaderboard",
+      viewAllChallenges: "View all challenges",
       friends: {
         title: "Friends", myFriends: "My friends", requests: "Requests",
         pendingRequests: "Pending requests", searchPlayers: "Search players...",
@@ -98,6 +113,7 @@ const social = {
         invite: "Invite", inviteFriends: "Invite friends",
         leaveTeam: "Leave team", dissolveTeam: "Dissolve team",
         noTeams: "No teams", noMembers: "No members",
+        challenges: "Challenges", wins: "Wins", avgLevel: "Avg level",
         teamCreated: "Team created!", inviteSent: "Invite sent",
         inviteAccepted: "Invite accepted", inviteRejected: "Invite rejected",
         charter: {
@@ -150,6 +166,13 @@ const social = {
   es: {
     social: {
       title: "Social", hub: "Espacio social",
+      hubStats: { level: "Nivel", xp: "XP", streak: "Racha", matches: "Partidos", days: "días" },
+      hubActions: { findFriends: "Buscar amigos", createTeam: "Crear team", newPost: "Nueva pub." },
+      andMore: "y {count} más",
+      createATeam: "Crear un team",
+      noPostsYet: "Sin publicaciones",
+      teamLeaderboard: "Clasificación del equipo",
+      viewAllChallenges: "Ver todos los desafíos",
       friends: {
         title: "Amigos", myFriends: "Mis amigos", requests: "Solicitudes",
         pendingRequests: "Solicitudes pendientes", searchPlayers: "Buscar jugadores...",
@@ -172,6 +195,7 @@ const social = {
         invite: "Invitar", inviteFriends: "Invitar amigos",
         leaveTeam: "Dejar el team", dissolveTeam: "Disolver el team",
         noTeams: "Sin teams", noMembers: "Sin miembros",
+        challenges: "Desafíos", wins: "Victorias", avgLevel: "Nivel promedio",
         teamCreated: "¡Team creado!", inviteSent: "Invitación enviada",
         inviteAccepted: "Invitación aceptada", inviteRejected: "Invitación rechazada",
         charter: {

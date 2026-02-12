@@ -19,14 +19,29 @@ interface InvitationItem {
   status: string;
 }
 
+interface MemberAvatar {
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
+}
+
 interface TeamsPageProps {
   userId: string;
   hasSignedCharter: boolean;
   teams: TeamWithRole[];
   invitations: InvitationItem[];
+  teamMemberAvatars?: Record<string, MemberAvatar[]>;
+  teamChallengeCounts?: Record<string, number>;
 }
 
-export default function TeamsPage({ userId, hasSignedCharter, teams: initialTeams, invitations: initialInvitations }: TeamsPageProps) {
+export default function TeamsPage({
+  userId,
+  hasSignedCharter,
+  teams: initialTeams,
+  invitations: initialInvitations,
+  teamMemberAvatars,
+  teamChallengeCounts,
+}: TeamsPageProps) {
   const { t } = useTranslation();
   const [teams, setTeams] = useState(initialTeams);
   const [invitations, setInvitations] = useState(initialInvitations);
@@ -130,7 +145,14 @@ export default function TeamsPage({ userId, hasSignedCharter, teams: initialTeam
       {teams.length > 0 ? (
         <div className="space-y-3">
           {teams.map((team) => (
-            <TeamCard key={team.id} team={team} myRole={team.myRole} />
+            <TeamCard
+              key={team.id}
+              team={team}
+              myRole={team.myRole}
+              memberAvatars={teamMemberAvatars?.[team.id]}
+              challengeCount={teamChallengeCounts?.[team.id]}
+              captainName={team.captain ? `${team.captain.first_name} ${team.captain.last_name}` : undefined}
+            />
           ))}
         </div>
       ) : (

@@ -28,7 +28,7 @@ export default async function MessagesRoute() {
     const { data } = await supabase
       .from("conversations")
       .select(
-        "*, conversation_participants(*, profile:profiles(id, first_name, last_name, avatar_url))"
+        "*, conversation_participants(*, profile:profiles(id, first_name, last_name, avatar_url, origin_country, favorite_club))"
       )
       .in("id", convIds)
       .order("last_message_at", { ascending: false, nullsFirst: false });

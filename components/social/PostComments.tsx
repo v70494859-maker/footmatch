@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { PostCommentWithAuthor } from "@/types";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import { createClient } from "@/lib/supabase/client";
+import ProfileAvatar from "@/components/ui/ProfileAvatar";
 
 interface PostCommentsProps {
   postId: string;
@@ -97,7 +98,6 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
         <div className="space-y-3 mb-3 max-h-80 overflow-y-auto">
           {comments.map((comment) => {
             const author = comment.author;
-            const initials = `${author?.first_name?.[0] ?? ""}${author?.last_name?.[0] ?? ""}`.toUpperCase();
 
             return (
               <div key={comment.id} className="flex items-start gap-2.5">
@@ -109,9 +109,11 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
                       className="w-7 h-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-pitch-900 flex items-center justify-center text-pitch-400 text-[10px] font-semibold">
-                      {initials}
-                    </div>
+                    <ProfileAvatar
+                      firstName={author?.first_name ?? ""}
+                      lastName={author?.last_name ?? ""}
+                      size="xs"
+                    />
                   )}
                 </Link>
                 <div className="flex-1 min-w-0">
