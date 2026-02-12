@@ -7,6 +7,7 @@ const protectedRoutes = [
   "/my-matches",
   "/subscription",
   "/leaderboard",
+  "/faq",
   "/profile",
   "/players",
   "/operator",
@@ -44,12 +45,13 @@ export async function middleware(request: NextRequest) {
   if (user && role) {
     const url = request.nextUrl.clone();
 
-    // /matches, /my-matches, /subscription, /leaderboard → player only
+    // /matches, /my-matches, /subscription, /leaderboard, /faq → player only
     if (
       (pathname.startsWith("/matches") ||
         pathname.startsWith("/my-matches") ||
         pathname.startsWith("/subscription") ||
-        pathname.startsWith("/leaderboard")) &&
+        pathname.startsWith("/leaderboard") ||
+        pathname.startsWith("/faq")) &&
       role !== "player" &&
       role !== "admin"
     ) {
@@ -91,6 +93,7 @@ export const config = {
     "/my-matches/:path*",
     "/subscription/:path*",
     "/leaderboard/:path*",
+    "/faq/:path*",
     "/profile/:path*",
     "/players/:path*",
     "/onboarding",
