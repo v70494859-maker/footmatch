@@ -35,7 +35,35 @@ export type NotificationType =
   | "match_mvp"
   | "xp_earned"
   | "level_up"
-  | "badge_unlocked";
+  | "badge_unlocked"
+  | "friend_request"
+  | "friend_accepted"
+  | "team_invite"
+  | "team_joined"
+  | "new_message"
+  | "post_liked"
+  | "post_commented"
+  | "challenge_received"
+  | "challenge_accepted"
+  | "challenge_declined";
+
+// ─── Social Enums ────────────────────────────────────────
+
+export type FriendshipStatus = "pending" | "accepted" | "rejected" | "blocked";
+
+export type TeamRole = "captain" | "co_captain" | "member";
+
+export type TeamInvitationStatus = "pending" | "accepted" | "rejected";
+
+export type ConversationType = "direct" | "group";
+
+export type DirectMessageType = "text" | "image" | "voice";
+
+export type PostVisibility = "public" | "friends" | "team";
+
+export type PostMediaType = "image" | "video";
+
+export type ChallengeStatus = "proposed" | "accepted" | "declined" | "scheduled" | "in_progress" | "completed" | "canceled";
 
 // ─── Labels ──────────────────────────────────────────────
 
@@ -415,4 +443,172 @@ export interface CreateMatchFormData {
   city: string;
   capacity: number;
   description: string;
+}
+
+// ─── Social Entities ─────────────────────────────────────
+
+export interface Friendship {
+  id: string;
+  requester_id: string;
+  addressee_id: string;
+  status: FriendshipStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FriendshipWithProfile extends Friendship {
+  requester: Profile;
+  addressee: Profile;
+}
+
+export interface SocialTeam {
+  id: string;
+  name: string;
+  description: string | null;
+  crest_url: string | null;
+  crest_preset: string | null;
+  captain_id: string;
+  city: string | null;
+  member_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamMember {
+  id: string;
+  team_id: string;
+  user_id: string;
+  role: TeamRole;
+  joined_at: string;
+}
+
+export interface TeamMemberWithProfile extends TeamMember {
+  profile: Profile;
+}
+
+export interface TeamWithMembers extends SocialTeam {
+  team_members: TeamMemberWithProfile[];
+  captain: Profile;
+}
+
+export interface TeamCharter {
+  id: string;
+  user_id: string;
+  signed_at: string;
+}
+
+export interface TeamInvitation {
+  id: string;
+  team_id: string;
+  inviter_id: string;
+  invitee_id: string;
+  status: TeamInvitationStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamInvitationWithDetails extends TeamInvitation {
+  team: SocialTeam;
+  inviter: Profile;
+  invitee: Profile;
+}
+
+export interface Conversation {
+  id: string;
+  type: ConversationType;
+  name: string | null;
+  last_message_at: string | null;
+  created_at: string;
+}
+
+export interface ConversationParticipant {
+  id: string;
+  conversation_id: string;
+  user_id: string;
+  last_read_at: string | null;
+  muted: boolean;
+  joined_at: string;
+}
+
+export interface DirectMessage {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  type: DirectMessageType;
+  content: string | null;
+  media_url: string | null;
+  reply_to_id: string | null;
+  created_at: string;
+}
+
+export interface DirectMessageWithSender extends DirectMessage {
+  sender: Profile;
+}
+
+export interface ConversationWithParticipants extends Conversation {
+  participants: (ConversationParticipant & { profile: Profile })[];
+  last_message?: DirectMessage | null;
+}
+
+export interface Post {
+  id: string;
+  author_id: string;
+  caption: string | null;
+  visibility: PostVisibility;
+  like_count: number;
+  comment_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PostMedia {
+  id: string;
+  post_id: string;
+  media_type: PostMediaType;
+  media_url: string;
+  thumbnail_url: string | null;
+  sort_order: number;
+}
+
+export interface PostLike {
+  id: string;
+  post_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface PostComment {
+  id: string;
+  post_id: string;
+  author_id: string;
+  content: string;
+  created_at: string;
+}
+
+export interface PostWithDetails extends Post {
+  author: Profile;
+  post_media: PostMedia[];
+  user_has_liked?: boolean;
+}
+
+export interface PostCommentWithAuthor extends PostComment {
+  author: Profile;
+}
+
+export interface TeamChallenge {
+  id: string;
+  challenger_team_id: string;
+  challenged_team_id: string;
+  status: ChallengeStatus;
+  proposed_date: string | null;
+  proposed_venue: string | null;
+  match_id: string | null;
+  message: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamChallengeWithTeams extends TeamChallenge {
+  challenger_team: SocialTeam;
+  challenged_team: SocialTeam;
 }

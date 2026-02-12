@@ -39,7 +39,7 @@ const common = {
       loginToJoin: "Connectez-vous pour rejoindre ce match",
     },
     nav: {
-      matches: "Matchs", myMatches: "Mes matchs", subscription: "Abo", leaderboard: "Classement", profile: "Profil",
+      matches: "Matchs", myMatches: "Mes matchs", subscription: "Abo", leaderboard: "Classement", social: "Social", profile: "Profil",
       dashboard: "Tableau de bord", payments: "Paiements", logout: "D\u00e9connexion",
     },
     payment: {
@@ -89,7 +89,7 @@ const common = {
       loginToJoin: "Log in to join this match",
     },
     nav: {
-      matches: "Matches", myMatches: "My matches", subscription: "Sub", leaderboard: "Leaderboard", profile: "Profile",
+      matches: "Matches", myMatches: "My matches", subscription: "Sub", leaderboard: "Leaderboard", social: "Social", profile: "Profile",
       dashboard: "Dashboard", payments: "Payments", logout: "Log out",
     },
     payment: {
@@ -139,7 +139,7 @@ const common = {
       loginToJoin: "Inicia sesión para unirte a este partido",
     },
     nav: {
-      matches: "Partidos", myMatches: "Mis partidos", subscription: "Suscr.", leaderboard: "Clasificación", profile: "Perfil",
+      matches: "Partidos", myMatches: "Mis partidos", subscription: "Suscr.", leaderboard: "Clasificación", social: "Social", profile: "Perfil",
       dashboard: "Panel", payments: "Pagos", logout: "Cerrar sesión",
     },
     payment: {

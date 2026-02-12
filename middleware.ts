@@ -10,6 +10,7 @@ const protectedRoutes = [
   "/faq",
   "/profile",
   "/players",
+  "/social",
   "/operator",
   "/operator-onboarding",
   "/onboarding",
@@ -51,7 +52,8 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith("/my-matches") ||
         pathname.startsWith("/subscription") ||
         pathname.startsWith("/leaderboard") ||
-        pathname.startsWith("/faq")) &&
+        pathname.startsWith("/faq") ||
+        pathname.startsWith("/social")) &&
       role !== "player" &&
       role !== "admin"
     ) {
@@ -96,6 +98,7 @@ export const config = {
     "/faq/:path*",
     "/profile/:path*",
     "/players/:path*",
+    "/social/:path*",
     "/onboarding",
     "/operator/:path*",
     "/operator-onboarding/:path*",

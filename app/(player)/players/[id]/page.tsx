@@ -112,6 +112,7 @@ export default async function PlayerProfilePage({
       careerStats={careerStats as PlayerCareerStats | null}
       recentMatches={recentMatches}
       hasSubscription={hasSubscription}
+      currentUserId={user.id}
     />
   );
 }

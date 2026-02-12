@@ -10,12 +10,14 @@ import { getClubBySlug, getClubLogo } from "@/lib/clubs";
 import Image from "next/image";
 import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import SubscriptionGate from "@/components/ui/SubscriptionGate";
+import AddFriendButton from "@/components/social/AddFriendButton";
 
 interface PlayerProfileViewProps {
   profile: Profile;
   careerStats: PlayerCareerStats | null;
   recentMatches: PlayerMatchHistory[];
   hasSubscription: boolean;
+  currentUserId?: string;
 }
 
 const roleBadgeColors: Record<string, string> = {
@@ -29,6 +31,7 @@ export default function PlayerProfileView({
   careerStats,
   recentMatches,
   hasSubscription,
+  currentUserId,
 }: PlayerProfileViewProps) {
   const router = useRouter();
 
@@ -144,6 +147,13 @@ export default function PlayerProfileView({
                   </span>
                 ))}
               </div>
+            )}
+            {currentUserId && profile.role === "player" && (
+              <AddFriendButton
+                targetUserId={profile.id}
+                currentUserId={currentUserId}
+                className="mt-2"
+              />
             )}
             <p className="text-xs text-surface-500">
               Membre depuis{" "}
