@@ -9,9 +9,10 @@ import PostCreationForm from "@/components/social/PostCreationForm";
 interface SocialFeedProps {
   userId: string;
   initialPosts: PostWithDetails[];
+  isAdmin?: boolean;
 }
 
-export default function SocialFeed({ userId, initialPosts }: SocialFeedProps) {
+export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeedProps) {
   const { t } = useTranslation();
   const [posts, setPosts] = useState<PostWithDetails[]>(initialPosts);
   const [loading, setLoading] = useState(false);
@@ -92,12 +93,13 @@ export default function SocialFeed({ userId, initialPosts }: SocialFeedProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-surface-50 mb-6">
-        {t.social.feed.title}
-      </h1>
-
-      <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
+    <div>
+      {/* Admin-only post creation */}
+      {isAdmin && (
+        <div className="mb-4">
+          <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
+        </div>
+      )}
 
       {posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
@@ -117,7 +119,7 @@ export default function SocialFeed({ userId, initialPosts }: SocialFeedProps) {
           <p className="text-sm text-surface-500">{t.social.feed.noPosts}</p>
         </div>
       ) : (
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4">
           {posts.map((post) => (
             <PostCard
               key={post.id}

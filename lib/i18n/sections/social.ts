@@ -9,6 +9,9 @@ const social = {
       noPostsYet: "Aucune publication",
       teamLeaderboard: "Classement de l'équipe",
       viewAllChallenges: "Voir tous les défis",
+      activity: { title: "Activité", friendRequests: "Demandes d'amis", recentChallenges: "Défis récents", seeMore: "Voir plus" },
+      trending: { title: "Tendances", likes: "likes" },
+      profileWidget: { viewProfile: "Voir mon profil", friends: "Amis", matches: "Matchs", teams: "Teams", leaderboard: "Classement" },
       friends: {
         title: "Amis", myFriends: "Mes amis", requests: "Demandes",
         pendingRequests: "Demandes en attente", searchPlayers: "Rechercher des joueurs...",
@@ -91,6 +94,9 @@ const social = {
       noPostsYet: "No posts yet",
       teamLeaderboard: "Team leaderboard",
       viewAllChallenges: "View all challenges",
+      activity: { title: "Activity", friendRequests: "Friend requests", recentChallenges: "Recent challenges", seeMore: "See more" },
+      trending: { title: "Trending", likes: "likes" },
+      profileWidget: { viewProfile: "View my profile", friends: "Friends", matches: "Matches", teams: "Teams", leaderboard: "Leaderboard" },
       friends: {
         title: "Friends", myFriends: "My friends", requests: "Requests",
         pendingRequests: "Pending requests", searchPlayers: "Search players...",
@@ -173,6 +179,9 @@ const social = {
       noPostsYet: "Sin publicaciones",
       teamLeaderboard: "Clasificación del equipo",
       viewAllChallenges: "Ver todos los desafíos",
+      activity: { title: "Actividad", friendRequests: "Solicitudes de amistad", recentChallenges: "Desafíos recientes", seeMore: "Ver más" },
+      trending: { title: "Tendencias", likes: "likes" },
+      profileWidget: { viewProfile: "Ver mi perfil", friends: "Amigos", matches: "Partidos", teams: "Teams", leaderboard: "Clasificación" },
       friends: {
         title: "Amigos", myFriends: "Mis amigos", requests: "Solicitudes",
         pendingRequests: "Solicitudes pendientes", searchPlayers: "Buscar jugadores...",
