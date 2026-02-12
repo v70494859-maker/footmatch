@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   Profile,
   PlayerCareerStats,
+  PlayerGamification,
+  UserBadge,
+  BadgeProgress,
   Match,
   MatchRegistrationWithMatch,
   MatchResult,
@@ -46,6 +49,9 @@ export default async function ProfilePage() {
     chatCountRes,
     terrainRegsRes,
     recentCompletedRes,
+    gamificationRes,
+    badgesRes,
+    badgeProgressRes,
   ] = await Promise.all([
     // Career stats
     supabase
@@ -110,6 +116,26 @@ export default async function ProfilePage() {
       .eq("match.status", "completed")
       .order("created_at", { ascending: false })
       .limit(3),
+
+    // Gamification data
+    supabase
+      .from("player_gamification")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+
+    // User badges
+    supabase
+      .from("user_badges")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("unlocked_at", { ascending: false }),
+
+    // Badge progress
+    supabase
+      .from("badge_progress")
+      .select("*")
+      .eq("user_id", user.id),
   ]);
 
   const careerStats = careerStatsRes.data as PlayerCareerStats | null;
@@ -291,6 +317,9 @@ export default async function ProfilePage() {
       profile={profile as Profile}
       careerStats={careerStats}
       recentForm={recentForm}
+      gamification={gamificationRes.data as PlayerGamification | null}
+      badges={(badgesRes.data ?? []) as UserBadge[]}
+      badgeProgress={(badgeProgressRes.data ?? []) as BadgeProgress[]}
       playerExtra={{
         upcomingMatches: upcomingMatches.length,
         subscriptionStatus: subscription?.status ?? null,

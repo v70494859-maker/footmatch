@@ -32,7 +32,10 @@ export type NotificationType =
   | "application_rejected"
   | "payout_completed"
   | "match_results_available"
-  | "match_mvp";
+  | "match_mvp"
+  | "xp_earned"
+  | "level_up"
+  | "badge_unlocked";
 
 // ─── Labels ──────────────────────────────────────────────
 
@@ -277,6 +280,51 @@ export interface PlayerCareerStats {
   loss_count: number;
   attendance_rate: number;
   last_updated: string;
+}
+
+export interface PlayerGamification {
+  user_id: string;
+  total_xp: number;
+  level: number;
+  level_name: string;
+  current_streak: number;
+  best_streak: number;
+  last_match_week: string | null;
+  cities_played: string[];
+  xp_today: number;
+  xp_today_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface XPTransaction {
+  id: string;
+  user_id: string;
+  source: string;
+  xp_amount: number;
+  match_id: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export type BadgeTier = "bronze" | "silver" | "gold";
+export type BadgeCategory = "volume" | "exploration" | "social" | "reliability" | "special";
+
+export interface UserBadge {
+  id: string;
+  user_id: string;
+  badge_id: string;
+  category: BadgeCategory;
+  tier: BadgeTier;
+  unlocked_at: string;
+}
+
+export interface BadgeProgress {
+  user_id: string;
+  badge_id: string;
+  current: number;
+  target: number;
+  updated_at: string;
 }
 
 // ─── Join types ──────────────────────────────────────────

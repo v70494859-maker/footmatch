@@ -3,6 +3,7 @@ import playerSection from "./sections/player";
 import operatorSection from "./sections/operator";
 import adminSection from "./sections/admin";
 import legalSection from "./sections/legal";
+import gamificationSection from "./sections/gamification";
 
 export type Locale = "fr" | "en" | "es";
 
@@ -185,9 +186,9 @@ const landing = {
 
 // Merge all sections
 const translations = {
-  fr: { ...landing.fr, ...commonSection.fr, ...playerSection.fr, ...operatorSection.fr, ...adminSection.fr, ...legalSection.fr },
-  en: { ...landing.en, ...commonSection.en, ...playerSection.en, ...operatorSection.en, ...adminSection.en, ...legalSection.en },
-  es: { ...landing.es, ...commonSection.es, ...playerSection.es, ...operatorSection.es, ...adminSection.es, ...legalSection.es },
+  fr: { ...landing.fr, ...commonSection.fr, ...playerSection.fr, ...operatorSection.fr, ...adminSection.fr, ...legalSection.fr, ...gamificationSection.fr },
+  en: { ...landing.en, ...commonSection.en, ...playerSection.en, ...operatorSection.en, ...adminSection.en, ...legalSection.en, ...gamificationSection.en },
+  es: { ...landing.es, ...commonSection.es, ...playerSection.es, ...operatorSection.es, ...adminSection.es, ...legalSection.es, ...gamificationSection.es },
 };
 
 export type Translations = (typeof translations)["fr"];

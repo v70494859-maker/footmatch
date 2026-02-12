@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import type { SubmitResultsPayload } from "@/types";
+import { processMatchCompletion } from "@/lib/gamification/xp-engine";
 
 const serviceClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
   // Verify match belongs to this operator
   const { data: match } = await serviceClient
     .from("matches")
-    .select("id, title, operator_id")
+    .select("id, title, operator_id, city, date, start_time")
     .eq("id", body.match_id)
     .single();
 
@@ -129,6 +130,23 @@ export async function POST(req: NextRequest) {
       body: `Tu as été élu MVP du match "${match.title}" ! Bravo !`,
       data: { match_id: body.match_id },
     });
+  }
+
+  // 6. Process gamification (XP + badges)
+  try {
+    await processMatchCompletion(
+      serviceClient,
+      body.match_id,
+      { city: match.city, date: match.date, start_time: match.start_time },
+      body.player_stats.map((ps) => ({
+        user_id: ps.user_id,
+        attended: ps.attended,
+        mvp: ps.mvp,
+      }))
+    );
+  } catch (err) {
+    console.error("[gamification] Error processing match:", err);
+    // Don't fail the whole request if gamification fails
   }
 
   return NextResponse.json({ ok: true });

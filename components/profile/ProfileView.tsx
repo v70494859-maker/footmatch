@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import type { Profile, PlayerCareerStats } from "@/types";
+import type { Profile, PlayerCareerStats, PlayerGamification, UserBadge, BadgeProgress } from "@/types";
 import { USER_ROLE_LABELS, SUBSCRIPTION_STATUS_LABELS, TERRAIN_TYPE_LABELS } from "@/types";
 import type { SubscriptionStatus, TerrainType } from "@/types";
 import StatBox from "@/components/admin/StatBox";
@@ -15,6 +15,10 @@ import { getClubBySlug, getClubLogo } from "@/lib/clubs";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
 import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import Button from "@/components/ui/Button";
+import LevelBadge from "@/components/gamification/LevelBadge";
+import XPProgressBar from "@/components/gamification/XPProgressBar";
+import BadgeShowcase from "@/components/gamification/BadgeShowcase";
+import StreakDisplay from "@/components/gamification/StreakDisplay";
 
 type FormResult = "V" | "N" | "D";
 
@@ -73,6 +77,9 @@ interface ProfileViewProps {
   recentForm?: FormResult[];
   operatorStats?: OperatorStats;
   playerExtra?: PlayerExtra;
+  gamification?: PlayerGamification | null;
+  badges?: UserBadge[];
+  badgeProgress?: BadgeProgress[];
 }
 
 const roleBadgeColors: Record<string, string> = {
@@ -123,6 +130,9 @@ export default function ProfileView({
   recentForm = [],
   operatorStats,
   playerExtra,
+  gamification,
+  badges,
+  badgeProgress,
 }: ProfileViewProps) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -277,6 +287,49 @@ export default function ProfileView({
           )}
         </div>
       </div>
+
+      {/* XP & Level */}
+      {gamification && (
+        <div className="bg-surface-900 border border-surface-800 rounded-xl p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <LevelBadge level={gamification.level} size="lg" />
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  {t.gamification.levels[gamification.level] ?? gamification.level_name}
+                </p>
+                <p className="text-xs text-surface-400">
+                  {t.gamification.level} {gamification.level}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-bold text-pitch-400">
+                {gamification.total_xp.toLocaleString()}
+              </p>
+              <p className="text-[10px] text-surface-500">{t.gamification.totalXp}</p>
+            </div>
+          </div>
+          <XPProgressBar totalXp={gamification.total_xp} showDetails />
+        </div>
+      )}
+
+      {/* Streak display */}
+      {gamification && (gamification.current_streak > 0 || gamification.best_streak > 0) && (
+        <StreakDisplay
+          currentStreak={gamification.current_streak}
+          bestStreak={gamification.best_streak}
+          citiesPlayed={gamification.cities_played ?? []}
+        />
+      )}
+
+      {/* Badge showcase */}
+      {(badges && badges.length > 0 || (badgeProgress && badgeProgress.length > 0)) && (
+        <BadgeShowcase
+          badges={badges ?? []}
+          progress={badgeProgress ?? []}
+        />
+      )}
 
       {/* Stats strip */}
       {playerExtra && (
