@@ -2438,6 +2438,463 @@ UPDATE operators SET total_matches = 28 WHERE id = '00000000-0000-0000-0002-0000
 UPDATE operators SET total_matches = 21 WHERE id = '00000000-0000-0000-0002-000000000002';
 
 -- =====================================================
+-- SOCIAL FEED — 42 posts by admin (Marc Dupont)
+-- Spanning 60 days: GOAT events, match recaps, anecdotes,
+-- platform updates, sponsors, community highlights
+-- =====================================================
+
+INSERT INTO posts (id, author_id, caption, visibility, like_count, comment_count, created_at) VALUES
+
+-- ── DAY -60 : Lancement ──
+('00000000-0000-0000-0005-000000000001', '00000000-0000-0000-0000-000000000001',
+ '🚀 FootMatch est officiellement lancé à Genève ! Rejoignez la première communauté de foot loisir de Suisse romande. Inscrivez-vous, trouvez un match près de chez vous et montrez ce que vous valez sur le terrain. Le ballon rond n''a jamais été aussi accessible. Bienvenue dans l''aventure !',
+ 'public', 47, 12, now() - interval '60 days'),
+
+-- ── DAY -58 : Premier match historique ──
+('00000000-0000-0000-0005-000000000002', '00000000-0000-0000-0000-000000000001',
+ '⚽ HISTORIQUE — Premier match FootMatch hier soir au Stade de la Tambourine ! 10 joueurs, 2 équipes, 90 minutes de pur bonheur. Score final : 5-3. MVP de la soirée : Lucas Müller avec un triplé dont une reprise de volée qui a fait trembler les filets. On en veut encore !',
+ 'public', 38, 8, now() - interval '58 days'),
+
+-- ── DAY -56 : Anecdote marrante ──
+('00000000-0000-0000-0005-000000000003', '00000000-0000-0000-0000-000000000001',
+ '😂 Moment culte d''hier soir : un joueur a célébré son but en glissant sur les genoux... sauf que le terrain synthétique l''a freiné net et il a fait un salto avant involontaire. Tout le monde était mort de rire, lui compris. Le foot c''est aussi ça, des souvenirs impayables !',
+ 'public', 62, 15, now() - interval '56 days'),
+
+-- ── DAY -54 : Update plateforme ──
+('00000000-0000-0000-0005-000000000004', '00000000-0000-0000-0000-000000000001',
+ '🔧 MISE À JOUR — Nouveautés sur FootMatch :\n• Profils joueurs enrichis avec ville et club favori\n• Système de notifications en temps réel\n• Historique complet de vos matchs\n\nVotre expérience s''améliore chaque semaine. N''hésitez pas à nous faire vos retours !',
+ 'public', 25, 4, now() - interval '54 days'),
+
+-- ── DAY -52 : Recap match ──
+('00000000-0000-0000-0005-000000000005', '00000000-0000-0000-0000-000000000001',
+ '📊 RÉSULTATS DE LA SEMAINE\n\n🏟️ Centre sportif des Vernets — Mardi\nÉquipe A 3 - 2 Équipe B\nMVP : Thomas Favre (2 buts + 1 passe)\n\n🏟️ Terrain de Balexert — Jeudi\nÉquipe A 1 - 4 Équipe B\nMVP : Yann Rochat (hat-trick !)\n\n6 matchs cette semaine, 48 joueurs. La machine est lancée !',
+ 'public', 31, 6, now() - interval '52 days'),
+
+-- ── DAY -50 : GOAT Event #1 ──
+('00000000-0000-0000-0005-000000000006', '00000000-0000-0000-0000-000000000001',
+ '🐐 ÉVÉNEMENT GOAT #1 — « La Nuit des Légendes »\n\nSamedi dernier, 20 joueurs se sont affrontés lors de notre tout premier événement GOAT réservé aux meilleurs de la plateforme. Terrain privatisé au Stade de Frontenex, maillots floqués, arbitre officiel. Résultat : Les Grenat 6 - 4 Les Blancs. Ambiance de dingue, on remet ça très vite !',
+ 'public', 71, 18, now() - interval '50 days'),
+
+-- ── DAY -48 : Sponsor ──
+('00000000-0000-0000-0005-000000000007', '00000000-0000-0000-0000-000000000001',
+ '🤝 PARTENARIAT — Bienvenue à Pizza del Calcio, notre premier sponsor local ! Chaque joueur du mois recevra un bon pour 2 pizzas offertes. Le foot et la pizza, le duo parfait. Merci à eux de croire en notre communauté dès le début !',
+ 'public', 44, 9, now() - interval '48 days'),
+
+-- ── DAY -46 : Anecdote ──
+('00000000-0000-0000-0005-000000000008', '00000000-0000-0000-0000-000000000001',
+ '🎙️ ANECDOTE DU TERRAIN — Mardi soir, un joueur s''est pointé avec des chaussures de running « parce que mes crampons sont chez mon ex ». Il a quand même marqué 2 buts. Moralité : c''est pas l''équipement qui fait le joueur. Mais quand même, récupère tes crampons frère 😄',
+ 'public', 55, 11, now() - interval '46 days'),
+
+-- ── DAY -44 : Match recap épique ──
+('00000000-0000-0000-0005-000000000009', '00000000-0000-0000-0000-000000000001',
+ '🔥 LE MATCH DE L''ANNÉE (pour l''instant)\n\nCentre sportif de Carouge — Jeudi soir\nScore final : 7 - 7 !\n\n14 buts, 3 retournements de situation, un but à la dernière seconde de Nicolas Berger pour égaliser. Les 2 équipes se sont applaudies à la fin. VOILÀ pourquoi on fait ça. Le foot loisir dans toute sa splendeur.',
+ 'public', 68, 14, now() - interval '44 days'),
+
+-- ── DAY -42 : Communauté ──
+('00000000-0000-0000-0005-000000000010', '00000000-0000-0000-0000-000000000001',
+ '🎉 CAP DES 50 JOUEURS INSCRITS ! En seulement 3 semaines, 50 passionnés de foot ont rejoint FootMatch. De Genève à Nyon en passant par Carouge, la communauté grandit. Objectif 100 avant la fin du mois. Invitez vos potes, partagez le lien, on a besoin de vous sur le terrain !',
+ 'public', 35, 7, now() - interval '42 days'),
+
+-- ── DAY -40 : Update plateforme ──
+('00000000-0000-0000-0005-000000000011', '00000000-0000-0000-0000-000000000001',
+ '📱 NOUVEAUTÉ — Le système d''abonnement est en place !\n\nPour 11.99€/mois, accédez à tous les matchs de la plateforme :\n✅ Matchs illimités\n✅ Statistiques détaillées\n✅ Priorité d''inscription\n✅ Accès aux événements GOAT\n\nLe foot accessible à tous, c''est notre mission.',
+ 'public', 22, 5, now() - interval '40 days'),
+
+-- ── DAY -38 : Recap drôle ──
+('00000000-0000-0000-0005-000000000012', '00000000-0000-0000-0000-000000000001',
+ '😂 TOP 3 des excuses entendues cette semaine :\n\n1. « J''ai raté mon contrôle parce que le ballon était trop gonflé »\n2. « Je suis arrivé en retard, mon GPS m''a envoyé au mauvais terrain »\n3. « C''était pas hors-jeu, j''étais en retard sur l''action »\n\nOn vous aime quand même 💚',
+ 'public', 73, 19, now() - interval '38 days'),
+
+-- ── DAY -37 : GOAT Event #2 ──
+('00000000-0000-0000-0005-000000000013', '00000000-0000-0000-0000-000000000001',
+ '🐐 ÉVÉNEMENT GOAT #2 — « Le Derby des Quartiers »\n\nRive gauche vs Rive droite. 30 joueurs, 3 terrains, un format tournoi. Résultat final : RIVE DROITE l''emporte 2 matchs à 1 ! Buteur décisif : Raphaël Schmid avec un lob magnifique en finale. Les maillots avec flocage « GOAT » étaient incroyables. Photos à venir !',
+ 'public', 82, 22, now() - interval '37 days'),
+
+-- ── DAY -35 : Behind the scenes ──
+('00000000-0000-0000-0005-000000000014', '00000000-0000-0000-0000-000000000001',
+ '🎬 BEHIND THE SCENES — Ce que vous ne voyez pas : chaque semaine, on réserve les terrains, on vérifie les équipements, on équilibre les équipes par niveau. Tout ça pour que vous n''ayez qu''une chose à faire : venir jouer. L''équipe FootMatch bosse dur pour que vos soirées foot soient parfaites.',
+ 'public', 29, 3, now() - interval '35 days'),
+
+-- ── DAY -33 : Match recap ──
+('00000000-0000-0000-0005-000000000015', '00000000-0000-0000-0000-000000000001',
+ '📊 STATS DE LA SEMAINE\n\n• 8 matchs joués\n• 62 joueurs sur le terrain\n• 47 buts marqués (record !)\n• Meilleur buteur : Julien Morel (6 buts en 2 matchs)\n• Clean sheet : l''équipe de Maxime Girard (3-0 aux Vernets)\n\nLe niveau monte, c''est beau à voir 📈',
+ 'public', 34, 5, now() - interval '33 days'),
+
+-- ── DAY -31 : Sponsor maillots ──
+('00000000-0000-0000-0005-000000000016', '00000000-0000-0000-0000-000000000001',
+ '👕 FLOCAGE OFFICIEL — On est fiers de vous présenter nos nouveaux maillots floqués en partenariat avec le Servette FC ! Design exclusif FootMatch x SFC, disponibles pour les événements GOAT. Chaque joueur GOAT recevra le sien. Rouge grenat, écusson FootMatch sur le cœur. Classe non ?',
+ 'public', 89, 24, now() - interval '31 days'),
+
+-- ── DAY -30 : Anecdote ──
+('00000000-0000-0000-0005-000000000017', '00000000-0000-0000-0000-000000000001',
+ '🎙️ ANECDOTE — Hier, un joueur a marqué un but tellement beau (reprise de volée dans la lucarne) que l''équipe adverse a applaudi. Puis il a essayé de refaire la même action 5 minutes après... et a envoyé le ballon sur le parking. Parfois le foot te donne, parfois il te reprend 😂⚽',
+ 'public', 58, 13, now() - interval '30 days'),
+
+-- ── DAY -28 : Communauté 100 ──
+('00000000-0000-0000-0005-000000000018', '00000000-0000-0000-0000-000000000001',
+ '🎊 100 JOUEURS SUR FOOTMATCH !! 🎊\n\nOn a atteint le cap symbolique des 100 inscrits ! Merci à chacun d''entre vous. En 1 mois, vous avez joué 45 matchs, marqué plus de 200 buts, et créé une vraie communauté. Ce n''est que le début. Genève joue au foot, et ça se passe sur FootMatch 💚',
+ 'public', 94, 27, now() - interval '28 days'),
+
+-- ── DAY -27 : Update gamification ──
+('00000000-0000-0000-0005-000000000019', '00000000-0000-0000-0000-000000000001',
+ '🏆 NOUVEAU — Système de gamification !\n\nGagnez de l''XP à chaque match joué, chaque but marqué, chaque victoire. Montez en niveau, débloquez des badges et grimpez dans le classement !\n\n🥉 Bronze (Niv. 1-4)\n🥈 Argent (Niv. 5-9)\n🥇 Or (Niv. 10+)\n\nQui sera le premier joueur Gold ? Le compteur tourne !',
+ 'public', 56, 16, now() - interval '27 days'),
+
+-- ── DAY -25 : Match recap fou ──
+('00000000-0000-0000-0005-000000000020', '00000000-0000-0000-0000-000000000001',
+ '🤯 INCROYABLE HIER SOIR\n\nStade de Vessy — Match du mardi\nMi-temps : 0 - 4\nScore final : 5 - 4 !!\n\n5 buts en 25 minutes en 2e mi-temps. Pierre Bonnet a inscrit un quadruplé pour mener la remontada. L''ambiance en fin de match était ÉLECTRIQUE. Ça, c''est le foot qu''on aime.',
+ 'public', 76, 20, now() - interval '25 days'),
+
+-- ── DAY -24 : Tips & tricks ──
+('00000000-0000-0000-0005-000000000021', '00000000-0000-0000-0000-000000000001',
+ '💡 TIPS FOOTMATCH\n\nPour profiter à fond de la plateforme :\n1. Complétez votre profil (photo + ville + club favori)\n2. Activez les notifs pour ne rater aucun match\n3. Inscrivez-vous tôt — les places partent vite !\n4. Venez 10 min avant le coup d''envoi\n5. Amenez de l''eau, jouez fair-play\n\nSimple mais efficace 👊',
+ 'public', 20, 2, now() - interval '24 days'),
+
+-- ── DAY -22 : GOAT Event #3 ──
+('00000000-0000-0000-0005-000000000022', '00000000-0000-0000-0000-000000000001',
+ '🐐 ÉVÉNEMENT GOAT #3 — « La Coupe du Lac »\n\nFormat tournoi 4 équipes de 7. Terrain du Bout-du-Monde avec vue sur le Jet d''eau. Résultats :\n\n🏆 1er : FC Pâquis (capitaine : Cédric Blanc)\n🥈 2e : AS Plainpalais\n🥉 3e : Racing Eaux-Vives\n4e : Carouge United\n\nMVP du tournoi : Alexandre Perret (5 buts, 3 passes). Bravo à tous les participants !',
+ 'public', 85, 21, now() - interval '22 days'),
+
+-- ── DAY -21 : Blague ──
+('00000000-0000-0000-0005-000000000023', '00000000-0000-0000-0000-000000000001',
+ '😂 TABLEAU DES TRANSFERTS FOOTMATCH\n\nJoueur le plus demandé : celui qui amène les cônes\nJoueur le plus rare : celui qui arrive à l''heure\nJoueur le plus cher : celui qui oublie toujours sa cotis\nJoueur le plus fidèle : celui qui joue même sous la pluie\n\nVous vous reconnaissez ? 😄',
+ 'public', 67, 17, now() - interval '21 days'),
+
+-- ── DAY -19 : Sponsor ──
+('00000000-0000-0000-0005-000000000024', '00000000-0000-0000-0000-000000000001',
+ '💧 NOUVEAU PARTENAIRE — Bienvenue à Rivella ! Chaque événement GOAT sera désormais ravitaillé en boissons Rivella. Hydratation garantie entre les matchs. Merci à Rivella Suisse de soutenir le foot loisir genevois ! #FootMatch #Rivella #Partenariat',
+ 'public', 33, 5, now() - interval '19 days'),
+
+-- ── DAY -18 : Recap matchs ──
+('00000000-0000-0000-0005-000000000025', '00000000-0000-0000-0000-000000000001',
+ '📊 RÉSULTATS MIDWEEK\n\n⚡ Mardi — Terrain de Plan-les-Ouates\nMatch 1 : 4-2 (Buteurs : Loïc Ducret x2, Jonathan Bauer, Vincent Jacquier)\nMatch 2 : 3-3 (Égalisation à la dernière minute par Florian Dubois !)\n\n⚡ Mercredi — Centre sportif du Lignon\nMatch 1 : 2-0 (Clean sheet pour l''équipe d''Adrien Gaillard)\nMatch 2 : 5-1 (Festival offensif, Baptiste Renaud en feu 🔥)',
+ 'public', 28, 4, now() - interval '18 days'),
+
+-- ── DAY -16 : Update plateforme ──
+('00000000-0000-0000-0005-000000000026', '00000000-0000-0000-0000-000000000001',
+ '📱 MISE À JOUR v2.0\n\n• 🏅 Classement et leaderboard en temps réel\n• 👥 Module social : ajoutez vos amis !\n• 💬 Messagerie entre joueurs\n• 🛡️ Teams : créez votre équipe et défiez les autres\n• 📊 Statistiques avancées par match\n\nFootMatch n''est plus juste une appli de résa. C''est VOTRE communauté foot.',
+ 'public', 41, 8, now() - interval '16 days'),
+
+-- ── DAY -15 : Anecdote ──
+('00000000-0000-0000-0005-000000000027', '00000000-0000-0000-0000-000000000001',
+ '🎙️ LES PERLES DU TERRAIN\n\n« Passe ! Passe ! ... Non pas à lui, À MOI ! »\n« Arbitre y''a faute ! » — Sur un terrain sans arbitre\n« C''est mon dernier match du mois » — Dit chaque semaine\n« Je joue défenseur ce soir » — Reste en permanence devant le but adverse\n\nDites-nous en commentaire votre meilleure perle ! 👇',
+ 'public', 81, 31, now() - interval '15 days'),
+
+-- ── DAY -13 : GOAT Event #4 ──
+('00000000-0000-0000-0005-000000000028', '00000000-0000-0000-0000-000000000001',
+ '🐐 ÉVÉNEMENT GOAT #4 — « Le Classique »\n\nMatch de gala 11v11 au stade des Charmilles. Ambiance pro : maillots floqués Servette FC x FootMatch, speaker, musique d''avant-match. Score : 3-2 après prolongations !\n\nBut vainqueur de Sylvain Chevalier à la 118e minute sur un centre parfait de Hugo Mercier. Frissons garantis, on se serait cru en Ligue des Champions.',
+ 'public', 91, 25, now() - interval '13 days'),
+
+-- ── DAY -12 : Photo event ──
+('00000000-0000-0000-0005-000000000029', '00000000-0000-0000-0000-000000000001',
+ '📸 GALERIE PHOTOS — Événement GOAT #4 « Le Classique »\n\nRetrouvez les plus beaux moments de samedi soir. L''entrée des joueurs, l''ambiance dans les vestiaires, les célébrations, et cette photo de groupe légendaire à la fin. 40 joueurs, 1 passion commune. Merci à tous les participants !',
+ 'public', 64, 10, now() - interval '12 days'),
+
+-- ── DAY -11 : Communauté ──
+('00000000-0000-0000-0005-000000000030', '00000000-0000-0000-0000-000000000001',
+ '🌍 LA DIVERSITÉ FOOTMATCH\n\nNotre communauté compte des joueurs de 18 nationalités différentes ! Suisse, France, Portugal, Espagne, Brésil, Algérie, Tunisie, Maroc, Italie, Colombie, Sénégal, Cameroun, Côte d''Ivoire, Turquie, Kosovo, Albanie, Serbie, Congo.\n\nLe foot n''a pas de frontières. Sur le terrain, on parle tous le même langage ⚽🌍',
+ 'public', 72, 16, now() - interval '11 days'),
+
+-- ── DAY -10 : Joueur du mois ──
+('00000000-0000-0000-0005-000000000031', '00000000-0000-0000-0000-000000000001',
+ '🏅 JOUEUR DU MOIS — Félicitations à Romain Vuilleumier !\n\n📊 Ses stats ce mois :\n• 8 matchs joués (record !)\n• 11 buts marqués\n• 4 passes décisives\n• 6 victoires\n• Niveau Gold atteint 🥇\n\nUn vrai GOAT. Son secret ? « Je viens juste pour m''amuser. » Respect 👏',
+ 'public', 53, 12, now() - interval '10 days'),
+
+-- ── DAY -9 : Update à venir ──
+('00000000-0000-0000-0005-000000000032', '00000000-0000-0000-0000-000000000001',
+ '🔮 COMING SOON — Ce qui arrive sur FootMatch :\n\n🏟️ Mode Tournoi : organisez vos propres tournois\n📹 Replay vidéo : highlights de vos matchs\n🗺️ Carte interactive : trouvez les matchs autour de vous\n🎯 Défis hebdomadaires : gagnez du bonus XP\n🤝 Système de parrainage : invitez un ami, gagnez 1 mois gratuit\n\nOn construit l''avenir du foot loisir. Ensemble.',
+ 'public', 48, 9, now() - interval '9 days'),
+
+-- ── DAY -8 : Anecdote drôle ──
+('00000000-0000-0000-0005-000000000033', '00000000-0000-0000-0000-000000000001',
+ '😂 CONFESSION D''UN GARDIEN FOOTMATCH\n\n« J''ai arrêté un penalty hier. Le tireur a glissé et le ballon a roulé doucement vers moi. J''ai plongé quand même pour le style. Mon équipe m''a porté en triomphe. Personne n''a besoin de savoir la vérité. »\n\nAnonyme, mais on sait qui tu es 😏',
+ 'public', 79, 23, now() - interval '8 days'),
+
+-- ── DAY -7 : Recap weekend ──
+('00000000-0000-0000-0005-000000000034', '00000000-0000-0000-0000-000000000001',
+ '📊 BILAN DU WEEKEND\n\n🏟️ 6 matchs joués sur 3 terrains\n👥 54 joueurs mobilisés\n⚽ 38 buts (moyenne 6.3/match)\n🏆 Hat-trick de Nathan Pittet au Stade de Vessy\n🧤 Double clean sheet de Sébastien Rey aux Vernets\n📈 Taux de remplissage : 96%\n\nLe weekend prochain ? Encore plus de matchs !',
+ 'public', 36, 6, now() - interval '7 days'),
+
+-- ── DAY -6 : Sponsor flocage ──
+('00000000-0000-0000-0005-000000000035', '00000000-0000-0000-0000-000000000001',
+ '👕🔥 EXCLU — Nos maillots GOAT édition limitée avec flocage Étoile Carouge FC sont arrivés ! Design noir et or, logo FootMatch brodé, numéro personnalisé au dos. Réservés aux joueurs GOAT level 8+. On vous les distribue au prochain événement. Préparez vos plus belles poses pour les photos 📸',
+ 'public', 77, 18, now() - interval '6 days'),
+
+-- ── DAY -5 : GOAT Event #5 ──
+('00000000-0000-0000-0005-000000000036', '00000000-0000-0000-0000-000000000001',
+ '🐐 ÉVÉNEMENT GOAT #5 — « Le Ballon d''Or FootMatch »\n\nSoirée de remise des prix au Café du Soleil après un tournoi 5v5 épique :\n\n🏆 Ballon d''Or : Nathan Pittet\n🥈 Ballon d''Argent : Pierre Bonnet\n🥉 Ballon de Bronze : Alexandre Perret\n🧤 Meilleur gardien : Arnaud Terrier\n⚡ Révélation : Killian Caron\n🤝 Fair-play : Bastien Fournier\n\nBravo à tous ! Rendez-vous au prochain GOAT 🐐',
+ 'public', 88, 26, now() - interval '5 days'),
+
+-- ── DAY -4 : Anecdote ──
+('00000000-0000-0000-0005-000000000037', '00000000-0000-0000-0000-000000000001',
+ '🎙️ MOMENT LÉGENDAIRE\n\nHier soir, un joueur a tiré un coup franc en lucarne... du mauvais côté. Son propre gardien l''a regardé, dépité. Le tireur a dit « C''était un centre ! ». Personne n''y a cru.\n\n3 minutes plus tard, il a remis un centre-tir qui est rentré directement. Il s''est retourné et a dit « Celui-là aussi c''était un centre. » Génie ou chance ? Le débat continue 😂',
+ 'public', 63, 14, now() - interval '4 days'),
+
+-- ── DAY -3 : Update réseau social ──
+('00000000-0000-0000-0005-000000000038', '00000000-0000-0000-0000-000000000001',
+ '📱 NOUVEAU — Le fil d''actualité est là !\n\nVous lisez ce post grâce à notre toute nouvelle fonctionnalité : le feed social FootMatch. Restez connectés avec la communauté, suivez les résultats, découvrez les événements à venir.\n\nC''est notre canal de communication officiel. Toutes les actus, les résultats et les annonces passent ici. Stay tuned ! 🔔',
+ 'public', 30, 4, now() - interval '3 days'),
+
+-- ── DAY -2 : Teaser event ──
+('00000000-0000-0000-0005-000000000039', '00000000-0000-0000-0000-000000000001',
+ '👀 TEASER — Un événement spécial se prépare pour le mois prochain. On ne peut pas encore tout révéler, mais voici des indices :\n\n🏟️ Le plus grand terrain qu''on ait jamais réservé\n🎤 Un invité surprise du monde du foot pro\n👕 Des maillots exclusifs pour chaque participant\n🏆 Un trophée physique pour les vainqueurs\n\nInscriptions bientôt ouvertes. Soyez prêts. #GOATEvent6',
+ 'public', 95, 32, now() - interval '2 days'),
+
+-- ── DAY -1 : Recap + motivation ──
+('00000000-0000-0000-0005-000000000040', '00000000-0000-0000-0000-000000000001',
+ '💚 2 MOIS DE FOOTMATCH — Le bilan !\n\n📈 En chiffres :\n• 100+ joueurs actifs\n• 55 matchs joués\n• 300+ buts marqués\n• 5 événements GOAT\n• 3 sponsors partenaires\n• 18 nationalités représentées\n\nEt ce n''est que le début. Chaque semaine, de nouveaux joueurs rejoignent l''aventure. Le foot loisir a trouvé sa maison à Genève. Merci à vous tous. On continue 💪⚽',
+ 'public', 83, 19, now() - interval '1 day'),
+
+-- ── Bonus posts pour varier ──
+
+-- DAY -47 : Culture foot
+('00000000-0000-0000-0005-000000000041', '00000000-0000-0000-0000-000000000001',
+ '🧠 LE SAVIEZ-VOUS ?\n\nLe premier match de football en Suisse a été joué en 1869 à Lausanne, entre des étudiants anglais. Genève a suivi en 1890 avec la création du Servette FC, l''un des plus vieux clubs du pays.\n\n156 ans plus tard, on perpétue la tradition sur FootMatch. L''histoire continue avec vous !',
+ 'public', 27, 3, now() - interval '47 days'),
+
+-- DAY -36 : Défi communautaire
+('00000000-0000-0000-0005-000000000042', '00000000-0000-0000-0000-000000000001',
+ '🎯 DÉFI COMMUNAUTAIRE\n\nObjectif collectif cette semaine : 50 buts marqués sur l''ensemble des matchs FootMatch !\n\nCompteur actuel : 0/50\nOn update en temps réel. Chaque but compte. Si on atteint l''objectif, pizza party offerte au prochain événement GOAT. À vos crampons ! 🍕⚽',
+ 'public', 45, 11, now() - interval '36 days');
+
+-- =====================================================
+-- POST LIKES (random players liking admin posts)
+-- =====================================================
+
+INSERT INTO post_likes (post_id, user_id, created_at) VALUES
+-- Post 1 (launch) — 47 likes
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000101',now()-interval '60 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000102',now()-interval '60 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000103',now()-interval '59 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000104',now()-interval '59 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000105',now()-interval '59 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000106',now()-interval '58 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000107',now()-interval '58 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000108',now()-interval '58 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000109',now()-interval '57 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000110',now()-interval '57 days'),
+-- Post 6 (GOAT #1) — popular
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000101',now()-interval '50 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000102',now()-interval '50 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000103',now()-interval '49 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000104',now()-interval '49 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000105',now()-interval '49 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000106',now()-interval '48 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000107',now()-interval '48 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000108',now()-interval '48 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000109',now()-interval '48 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000110',now()-interval '47 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000111',now()-interval '47 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000112',now()-interval '47 days'),
+-- Post 13 (GOAT #2 Derby) — very popular
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000101',now()-interval '37 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000102',now()-interval '37 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000103',now()-interval '36 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000104',now()-interval '36 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000105',now()-interval '36 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000106',now()-interval '36 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000107',now()-interval '35 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000108',now()-interval '35 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000109',now()-interval '35 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000110',now()-interval '35 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000111',now()-interval '34 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000112',now()-interval '34 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000113',now()-interval '34 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000114',now()-interval '34 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000115',now()-interval '33 days'),
+-- Post 16 (maillots Servette) — most popular
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000101',now()-interval '31 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000102',now()-interval '31 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000103',now()-interval '31 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000104',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000105',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000106',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000107',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000108',now()-interval '29 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000109',now()-interval '29 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000110',now()-interval '29 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000111',now()-interval '29 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000112',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000113',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000114',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000115',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000116',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000117',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000118',now()-interval '27 days'),
+-- Post 18 (100 joueurs) — very popular
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000101',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000102',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000103',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000104',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000105',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000106',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000107',now()-interval '26 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000108',now()-interval '26 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000109',now()-interval '26 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000110',now()-interval '26 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000111',now()-interval '25 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000112',now()-interval '25 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000113',now()-interval '25 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000114',now()-interval '25 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000115',now()-interval '24 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000116',now()-interval '24 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000117',now()-interval '24 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000118',now()-interval '24 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000119',now()-interval '23 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000120',now()-interval '23 days'),
+-- Post 27 (perles du terrain) — very popular
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000101',now()-interval '15 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000102',now()-interval '15 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000103',now()-interval '14 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000104',now()-interval '14 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000105',now()-interval '14 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000106',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000107',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000108',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000109',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000110',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000111',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000112',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000113',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000114',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000115',now()-interval '10 days'),
+-- Post 28 (GOAT #4 Le Classique) — very popular
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000101',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000102',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000103',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000104',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000105',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000106',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000107',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000108',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000109',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000110',now()-interval '11 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000111',now()-interval '10 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000112',now()-interval '10 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000113',now()-interval '10 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000114',now()-interval '10 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000115',now()-interval '9 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000116',now()-interval '9 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000117',now()-interval '9 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000118',now()-interval '9 days'),
+-- Post 36 (GOAT #5 Ballon d'Or) — very popular
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000101',now()-interval '5 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000102',now()-interval '5 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000103',now()-interval '5 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000104',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000105',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000106',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000107',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000108',now()-interval '3 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000109',now()-interval '3 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000110',now()-interval '3 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000111',now()-interval '3 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000112',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000113',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000114',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000115',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000116',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000117',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000118',now()-interval '1 day'),
+-- Post 39 (Teaser GOAT #6) — most popular
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000101',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000102',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000103',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000104',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000105',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000106',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000107',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000108',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000109',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000110',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000111',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000112',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000113',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000114',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000115',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000116',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000117',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000118',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000119',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000120',now()-interval '1 day');
+
+-- =====================================================
+-- POST COMMENTS (sample comments on popular posts)
+-- =====================================================
+
+INSERT INTO post_comments (post_id, author_id, content, created_at) VALUES
+-- Post 1 (launch)
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000101','Enfin une appli pour le foot loisir à Genève ! Inscrit direct',now()-interval '60 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000105','Trop bien, j''attendais ça depuis longtemps',now()-interval '59 days'),
+('00000000-0000-0000-0005-000000000001','00000000-0000-0000-0000-000000000109','Let''s goooo on va kiffer',now()-interval '59 days'),
+-- Post 3 (salto)
+('00000000-0000-0000-0005-000000000003','00000000-0000-0000-0000-000000000102','MORT DE RIRE j''étais là, c''était incroyable',now()-interval '56 days'),
+('00000000-0000-0000-0005-000000000003','00000000-0000-0000-0000-000000000108','Il s''est relevé comme si de rien était, légende',now()-interval '55 days'),
+('00000000-0000-0000-0005-000000000003','00000000-0000-0000-0000-000000000115','Faut filmer les matchs sérieux 😂',now()-interval '55 days'),
+-- Post 6 (GOAT #1)
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000101','C''était un truc de ouf, vivement le prochain !',now()-interval '50 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000106','Les maillots floqués c''est le game changer',now()-interval '49 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000110','Comment on fait pour être invité au prochain GOAT ?',now()-interval '49 days'),
+('00000000-0000-0000-0005-000000000006','00000000-0000-0000-0000-000000000114','Ambiance incroyable, on se serait cru en pro',now()-interval '48 days'),
+-- Post 9 (7-7 match)
+('00000000-0000-0000-0005-000000000009','00000000-0000-0000-0000-000000000104','J''y étais ! Le but de Nicolas à la dernière seconde on a tous crié',now()-interval '44 days'),
+('00000000-0000-0000-0005-000000000009','00000000-0000-0000-0000-000000000107','14 buts en un match, c''est du délire total',now()-interval '43 days'),
+('00000000-0000-0000-0005-000000000009','00000000-0000-0000-0000-000000000113','Le plus beau match que j''ai fait depuis des années',now()-interval '43 days'),
+-- Post 12 (excuses)
+('00000000-0000-0000-0005-000000000012','00000000-0000-0000-0000-000000000103','Le coup du GPS c''est moi... désolé les gars 😅',now()-interval '38 days'),
+('00000000-0000-0000-0005-000000000012','00000000-0000-0000-0000-000000000111','Vous avez oublié : "je suis blessé" *continue à jouer*',now()-interval '37 days'),
+('00000000-0000-0000-0005-000000000012','00000000-0000-0000-0000-000000000119','Celle du hors-jeu c''est mon pote à chaque match 🤣',now()-interval '37 days'),
+('00000000-0000-0000-0005-000000000012','00000000-0000-0000-0000-000000000125','Ma préférée : "j''ai pas vu le ballon, y''avait le soleil" — match en nocturne',now()-interval '36 days'),
+-- Post 13 (GOAT #2 Derby)
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000101','RIVE DROITE FOREVER ! Le lob de Raphaël c''était sale',now()-interval '37 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000108','On veut la revanche !! Rive gauche va se venger',now()-interval '36 days'),
+('00000000-0000-0000-0005-000000000013','00000000-0000-0000-0000-000000000116','Format tournoi c''est trop bien, faites-en plus !',now()-interval '35 days'),
+-- Post 16 (maillots Servette)
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000102','Grenat et FootMatch, le combo parfait !',now()-interval '31 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000106','Je veux le mien ! Comment on fait ?',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000112','Trop stylé, ça va envoyer du lourd au prochain GOAT',now()-interval '30 days'),
+('00000000-0000-0000-0005-000000000016','00000000-0000-0000-0000-000000000118','Design incroyable, bravo l''équipe',now()-interval '29 days'),
+-- Post 18 (100 joueurs)
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000101','Fier de faire partie de l''aventure depuis le jour 1 !',now()-interval '28 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000109','100 c''est qu''un début, on va être 1000 !',now()-interval '27 days'),
+('00000000-0000-0000-0005-000000000018','00000000-0000-0000-0000-000000000117','Meilleure communauté foot de Suisse romande, pas de débat',now()-interval '27 days'),
+-- Post 20 (remontada 0-4 → 5-4)
+('00000000-0000-0000-0005-000000000020','00000000-0000-0000-0000-000000000104','J''étais dans l''équipe qui menait 4-0... on en parle plus 💀',now()-interval '25 days'),
+('00000000-0000-0000-0005-000000000020','00000000-0000-0000-0000-000000000109','Pierre Bonnet GOAT absolut, 4 buts pour la remontada',now()-interval '24 days'),
+('00000000-0000-0000-0005-000000000020','00000000-0000-0000-0000-000000000115','Mieux que Barça-PSG ce match',now()-interval '24 days'),
+-- Post 27 (perles du terrain)
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000103','"Arbitre !" sur un terrain sans arbitre c''est tellement vrai 😂',now()-interval '15 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000107','Le défenseur qui reste devant le but adverse JE SUIS DEDANS 🫣',now()-interval '14 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000111','Ajoutez : "je joue que gardien ce soir" *marque 3 buts*',now()-interval '14 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000120','"Dernier match du mois" JE ME SENS ATTAQUÉ',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000027','00000000-0000-0000-0000-000000000130','La meilleure : "je tire pas fort" et le ballon part en orbite',now()-interval '13 days'),
+-- Post 28 (GOAT #4 Le Classique)
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000102','Frissons au but de Sylvain, toute la ligne de touche a envahi le terrain',now()-interval '13 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000106','Le speaker et la musique d''entrée ça change tout, on se sent pro',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000110','Prolongations en nocturne au Charmilles, moment de vie incroyable',now()-interval '12 days'),
+('00000000-0000-0000-0005-000000000028','00000000-0000-0000-0000-000000000114','Prochain GOAT je suis là à 100%. Ces événements sont ouf',now()-interval '11 days'),
+-- Post 33 (gardien confession)
+('00000000-0000-0000-0005-000000000033','00000000-0000-0000-0000-000000000105','ON SAIT QUI C''EST 🤣🤣🤣',now()-interval '8 days'),
+('00000000-0000-0000-0005-000000000033','00000000-0000-0000-0000-000000000113','Porté en triomphe pour un penalty raté, légende absolue',now()-interval '7 days'),
+('00000000-0000-0000-0005-000000000033','00000000-0000-0000-0000-000000000121','Le plongeon pour le style mdrrr les gardiens sont une autre espèce',now()-interval '7 days'),
+-- Post 36 (Ballon d'Or)
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000101','Nathan mérite tellement, le mec est là chaque semaine et il envoie',now()-interval '5 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000109','Bastien prix fair-play, personne mérite plus que lui',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000115','Killian révélation c''est mérité, le gamin est incroyable',now()-interval '4 days'),
+('00000000-0000-0000-0005-000000000036','00000000-0000-0000-0000-000000000120','Soirée au Café du Soleil après le tournoi c''était mémorable',now()-interval '3 days'),
+-- Post 39 (Teaser GOAT #6)
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000101','UN INVITÉ DU FOOT PRO ?! Je suis HYPÉ à mort',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000104','Le plus grand terrain... le stade de Genève ?! 😱',now()-interval '2 days'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000107','Trophée physique ça change tout, on joue pour gagner !',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000112','Prenez mon argent, je serai là quoi qu''il arrive',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000116','L''invité surprise c''est Xhaka ou Seferovic ? 👀',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000039','00000000-0000-0000-0000-000000000120','Chaque événement GOAT est mieux que le précédent, bravo FootMatch',now()-interval '1 day'),
+-- Post 40 (bilan 2 mois)
+('00000000-0000-0000-0005-000000000040','00000000-0000-0000-0000-000000000102','Merci à toute l''équipe, vous avez créé quelque chose de spécial',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000040','00000000-0000-0000-0000-000000000108','En 2 mois on a une vraie famille foot, incroyable le chemin parcouru',now()-interval '1 day'),
+('00000000-0000-0000-0005-000000000040','00000000-0000-0000-0000-000000000114','Le foot loisir a trouvé sa maison. Merci FootMatch 💚',now()-interval '1 day');
+
+-- =====================================================
 -- SEED SUMMARY
 -- Total users: 103 (1 admin + 2 operators + 100 players)
 -- Active subscriptions: 90 | Canceled: 10
@@ -2445,4 +2902,5 @@ UPDATE operators SET total_matches = 21 WHERE id = '00000000-0000-0000-0002-0000
 -- Total registrations: 615
 -- Total player stats: 564
 -- Career stats auto-calculated by triggers
+-- Social feed: 42 admin posts, ~160 likes, ~55 comments
 -- =====================================================
