@@ -17,8 +17,6 @@ import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import Button from "@/components/ui/Button";
 import LevelBadge from "@/components/gamification/LevelBadge";
 import XPProgressBar from "@/components/gamification/XPProgressBar";
-import BadgeShowcase from "@/components/gamification/BadgeShowcase";
-import StreakDisplay from "@/components/gamification/StreakDisplay";
 
 type FormResult = "V" | "N" | "D";
 
@@ -181,13 +179,6 @@ export default function ProfileView({
   const drawPct = totalWDL > 0 ? (careerStats!.draw_count / totalWDL) * 100 : 0;
   const lossPct = totalWDL > 0 ? (careerStats!.loss_count / totalWDL) * 100 : 0;
 
-  // Terrain distribution
-  const totalTerrain = playerExtra
-    ? playerExtra.terrainCounts.indoor +
-      playerExtra.terrainCounts.outdoor +
-      playerExtra.terrainCounts.covered
-    : 0;
-
   return (
     <div className="px-4 py-6 max-w-2xl mx-auto space-y-6">
       {/* Avatar + Name */}
@@ -288,9 +279,9 @@ export default function ProfileView({
         </div>
       </div>
 
-      {/* XP & Level */}
+      {/* XP & Level — compact card with badge count */}
       {gamification && (
-        <div className="bg-surface-900 border border-surface-800 rounded-xl p-4 space-y-4">
+        <div className="bg-surface-900 border border-surface-800 rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <LevelBadge level={gamification.level} size="lg" />
@@ -299,36 +290,29 @@ export default function ProfileView({
                   {t.gamification.levels[gamification.level] ?? gamification.level_name}
                 </p>
                 <p className="text-xs text-surface-400">
-                  {t.gamification.level} {gamification.level}
+                  {gamification.total_xp.toLocaleString()} XP
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-lg font-bold text-pitch-400">
-                {gamification.total_xp.toLocaleString()}
-              </p>
-              <p className="text-[10px] text-surface-500">{t.gamification.totalXp}</p>
+            <div className="flex items-center gap-3">
+              {badges && badges.length > 0 && (
+                <div className="flex items-center gap-1 bg-amber-400/10 rounded-full px-2.5 py-1">
+                  <svg className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21 8 14l-6-4.6h7.6z" />
+                  </svg>
+                  <span className="text-xs font-bold text-amber-400">{badges.length}</span>
+                </div>
+              )}
+              {gamification.current_streak > 0 && (
+                <div className="flex items-center gap-1 bg-pitch-400/10 rounded-full px-2.5 py-1">
+                  <span className="text-xs">🔥</span>
+                  <span className="text-xs font-bold text-pitch-400">{gamification.current_streak}</span>
+                </div>
+              )}
             </div>
           </div>
-          <XPProgressBar totalXp={gamification.total_xp} showDetails />
+          <XPProgressBar totalXp={gamification.total_xp} />
         </div>
-      )}
-
-      {/* Streak display */}
-      {gamification && (gamification.current_streak > 0 || gamification.best_streak > 0) && (
-        <StreakDisplay
-          currentStreak={gamification.current_streak}
-          bestStreak={gamification.best_streak}
-          citiesPlayed={gamification.cities_played ?? []}
-        />
-      )}
-
-      {/* Badge showcase */}
-      {(badges && badges.length > 0 || (badgeProgress && badgeProgress.length > 0)) && (
-        <BadgeShowcase
-          badges={badges ?? []}
-          progress={badgeProgress ?? []}
-        />
       )}
 
       {/* Stats strip */}
@@ -363,105 +347,32 @@ export default function ProfileView({
         </div>
       )}
 
-      {/* Mon compte card */}
-      {playerExtra && (
-        <div className="bg-surface-900 border border-surface-800 rounded-xl p-4 space-y-3">
-          <h3 className="text-sm font-semibold text-surface-300">
-            {t.profile.myAccount}
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs text-surface-500">{t.subscription.title}</p>
-              {playerExtra.subscriptionStatus ? (
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${
-                      playerExtra.subscriptionStatus === "active"
-                        ? "bg-pitch-400"
-                        : playerExtra.subscriptionStatus === "trialing"
-                          ? "bg-blue-400"
-                          : "bg-danger-500"
-                    }`}
-                  />
-                  <span className="text-sm font-medium text-foreground">
-                    {SUBSCRIPTION_STATUS_LABELS[
-                      playerExtra.subscriptionStatus as SubscriptionStatus
-                    ] ?? playerExtra.subscriptionStatus}
-                  </span>
-                </div>
-              ) : (
-                <p className="text-sm font-medium text-surface-400 mt-0.5">
-                  {t.common.none}
-                </p>
-              )}
-              {playerExtra.subscriptionEnd &&
-                playerExtra.subscriptionStatus === "active" && (
-                  <p className="text-[10px] text-surface-500 mt-0.5">
-                    {t.profile.renewalOn}{" "}
-                    {new Date(
-                      playerExtra.subscriptionEnd
-                    ).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "short",
-                    })}
-                  </p>
-                )}
-            </div>
-            <div>
-              <p className="text-xs text-surface-500">{t.profile.upcomingMatches}</p>
-              <p className="text-sm font-medium text-foreground mt-0.5">
-                {playerExtra.upcomingMatches}
-              </p>
-            </div>
-            {careerStats && careerStats.total_matches > 0 && (
-              <>
-                <div>
-                  <p className="text-xs text-surface-500">{t.common.goalsPerMatch}</p>
-                  <p className="text-sm font-medium text-foreground mt-0.5">
-                    {(
-                      careerStats.total_goals / careerStats.total_matches
-                    ).toFixed(1)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-surface-500">{t.common.assistsPerMatch}</p>
-                  <p className="text-sm font-medium text-foreground mt-0.5">
-                    {(
-                      careerStats.total_assists / careerStats.total_matches
-                    ).toFixed(1)}
-                  </p>
-                </div>
-              </>
-            )}
+      {/* Subscription status (compact) */}
+      {playerExtra?.subscriptionStatus && (
+        <div className="flex items-center justify-between bg-surface-900 border border-surface-800 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2">
+            <span
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                playerExtra.subscriptionStatus === "active"
+                  ? "bg-pitch-400"
+                  : playerExtra.subscriptionStatus === "trialing"
+                    ? "bg-blue-400"
+                    : "bg-danger-500"
+              }`}
+            />
+            <span className="text-sm font-medium text-foreground">
+              {SUBSCRIPTION_STATUS_LABELS[
+                playerExtra.subscriptionStatus as SubscriptionStatus
+              ] ?? playerExtra.subscriptionStatus}
+            </span>
           </div>
-          {/* Engagement row */}
-          <div className="border-t border-surface-800 pt-3 flex items-center gap-4">
-            <p className="text-xs text-surface-500">
-              {t.subscription.memberSince}{" "}
-              {new Date(playerExtra.memberSince).toLocaleDateString("fr-FR", {
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-            {playerExtra.chatMessagesSent > 0 && (
-              <span className="text-[10px] font-medium bg-surface-800 text-surface-400 rounded-full px-2 py-0.5 flex items-center gap-1">
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                  />
-                </svg>
-                {playerExtra.chatMessagesSent} {t.common.messages.toLowerCase()}
-              </span>
-            )}
-          </div>
+          <p className="text-xs text-surface-500">
+            {t.subscription.memberSince}{" "}
+            {new Date(playerExtra.memberSince).toLocaleDateString("fr-FR", {
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
         </div>
       )}
 
@@ -791,39 +702,6 @@ export default function ProfileView({
             </div>
           )}
 
-          {/* Terrain distribution */}
-          {totalTerrain > 0 && (
-            <div className="border-t border-surface-800 pt-3">
-              <p className="text-[10px] text-surface-500 mb-2">
-                {t.profile.visitedTerrains}
-              </p>
-              <div className="flex items-center gap-2 flex-wrap">
-                {(
-                  Object.entries(playerExtra!.terrainCounts) as [
-                    TerrainType,
-                    number,
-                  ][]
-                )
-                  .filter(([, count]) => count > 0)
-                  .sort(([, a], [, b]) => b - a)
-                  .map(([type, count]) => (
-                    <span
-                      key={type}
-                      className="text-[10px] font-semibold uppercase tracking-wide bg-surface-800 text-surface-300 rounded-full px-2.5 py-0.5"
-                    >
-                      {TERRAIN_TYPE_LABELS[type]} {count}
-                    </span>
-                  ))}
-              </div>
-            </div>
-          )}
-
-          {/* Attendance */}
-          <div className="flex items-center justify-center text-xs text-surface-400 border-t border-surface-800 pt-3">
-            <span>
-              {t.common.reliability} : {Math.round(careerStats.attendance_rate * 100)}%
-            </span>
-          </div>
         </div>
       )}
 
