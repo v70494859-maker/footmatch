@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from("posts")
-    .select("*, author:profiles!posts_author_id_fkey(id, first_name, last_name, avatar_url, city), post_media(*)")
+    .select("*, author:profiles!posts_author_id_fkey(id, first_name, last_name, avatar_url, city, origin_country, favorite_club), post_media(*)")
     .order("created_at", { ascending: false })
     .limit(limit);
 

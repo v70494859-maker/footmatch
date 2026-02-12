@@ -52,9 +52,19 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith("/my-matches") ||
         pathname.startsWith("/subscription") ||
         pathname.startsWith("/leaderboard") ||
-        pathname.startsWith("/faq") ||
-        pathname.startsWith("/social")) &&
+        pathname.startsWith("/faq")) &&
       role !== "player" &&
+      role !== "admin"
+    ) {
+      url.pathname = ROLE_HOME_ROUTES[role];
+      return NextResponse.redirect(url);
+    }
+
+    // /social → player + operator + admin
+    if (
+      pathname.startsWith("/social") &&
+      role !== "player" &&
+      role !== "operator" &&
       role !== "admin"
     ) {
       url.pathname = ROLE_HOME_ROUTES[role];
