@@ -295,14 +295,32 @@ export default function ProfileView({
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {badges && badges.length > 0 && (
-                <div className="flex items-center gap-1 bg-amber-400/10 rounded-full px-2.5 py-1">
-                  <svg className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21 8 14l-6-4.6h7.6z" />
-                  </svg>
-                  <span className="text-xs font-bold text-amber-400">{badges.length}</span>
-                </div>
-              )}
+              {badges && badges.length > 0 && (() => {
+                const counts = { gold: 0, silver: 0, bronze: 0 };
+                for (const b of badges) counts[b.tier as keyof typeof counts]++;
+                return (
+                  <div className="flex items-center gap-2.5">
+                    {counts.gold > 0 && (
+                      <div className="flex flex-col items-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500" />
+                        <span className="text-[9px] font-semibold text-amber-400 mt-0.5">x{counts.gold}</span>
+                      </div>
+                    )}
+                    {counts.silver > 0 && (
+                      <div className="flex flex-col items-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-surface-300 to-surface-400" />
+                        <span className="text-[9px] font-semibold text-surface-400 mt-0.5">x{counts.silver}</span>
+                      </div>
+                    )}
+                    {counts.bronze > 0 && (
+                      <div className="flex flex-col items-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-700 to-amber-800" />
+                        <span className="text-[9px] font-semibold text-amber-700 mt-0.5">x{counts.bronze}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               {gamification.current_streak > 0 && (
                 <div className="flex items-center gap-1 bg-pitch-400/10 rounded-full px-2.5 py-1">
                   <span className="text-xs">🔥</span>
