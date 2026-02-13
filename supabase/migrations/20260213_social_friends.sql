@@ -52,8 +52,8 @@ CREATE TRIGGER friendships_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_friendships_updated_at();
 
 -- Add new notification types for friends
-ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'friend_request';
-ALTER TYPE notification_type ADD VALUE IF NOT EXISTS 'friend_accepted';
+ALTER TYPE notification_type_enum ADD VALUE IF NOT EXISTS 'friend_request';
+ALTER TYPE notification_type_enum ADD VALUE IF NOT EXISTS 'friend_accepted';
 
 -- RLS
 ALTER TABLE friendships ENABLE ROW LEVEL SECURITY;
