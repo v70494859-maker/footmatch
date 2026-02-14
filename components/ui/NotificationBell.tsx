@@ -146,10 +146,10 @@ function getNotificationRoute(notif: Notification): string | null {
 
   if (d.matchId) return `/matches/${d.matchId}`;
   if (type === "friend_request" || type === "friend_accepted") return "/social/friends";
-  if (type === "team_invite" || type === "team_joined") return "/social/teams";
+  if (type === "team_invite" || type === "team_joined") return "/teams";
   if (type === "new_message" && d.conversationId) return `/social/messages/${d.conversationId}`;
   if (type === "post_liked" || type === "post_commented") return "/social";
-  if (type === "challenge_received" || type === "challenge_accepted" || type === "challenge_declined") return "/social/teams";
+  if (type === "challenge_received" || type === "challenge_accepted" || type === "challenge_declined") return "/teams";
   if (type === "subscription_activated" || type === "subscription_canceled") return "/subscription";
   if (type === "payout_completed") return "/operator/payouts";
   if (type === "application_approved" || type === "application_rejected") return "/operator";

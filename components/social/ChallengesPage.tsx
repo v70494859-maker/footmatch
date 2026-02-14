@@ -36,7 +36,7 @@ export default function ChallengesPage({ teamId, teamName, userId, userRole, cha
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href={`/social/teams/${teamId}`} className="text-sm text-surface-400 hover:text-surface-200 transition-colors">
+          <Link href={`/teams/${teamId}`} className="text-sm text-surface-400 hover:text-surface-200 transition-colors">
             &larr; {teamName}
           </Link>
           <h1 className="text-2xl font-bold text-surface-50 mt-1">{t.social.challenges.title}</h1>

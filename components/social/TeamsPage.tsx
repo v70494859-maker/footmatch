@@ -92,7 +92,7 @@ export default function TeamsPage({
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-surface-50">{t.social.teams.myTeams}</h1>
         <Link
-          href="/social/teams/create"
+          href="/teams/create"
           className="px-4 py-2 bg-pitch-400 text-surface-950 text-sm font-semibold rounded-xl hover:bg-pitch-300 transition-colors"
         >
           {t.social.teams.createTeam}

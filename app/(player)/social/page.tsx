@@ -139,26 +139,6 @@ export default async function SocialPage() {
     .order("created_at", { ascending: false })
     .limit(3);
 
-  // ── Right sidebar: recent challenges (3) ──
-  // Get user's team IDs first
-  const { data: myTeamMemberships } = await supabase
-    .from("team_members")
-    .select("team_id")
-    .eq("user_id", user.id);
-
-  const myTeamIds = (myTeamMemberships ?? []).map((m: any) => m.team_id);
-
-  let recentChallenges: any[] = [];
-  if (myTeamIds.length > 0) {
-    const { data: challenges } = await supabase
-      .from("team_challenges")
-      .select("id, status, created_at, challenger_team:teams!team_challenges_challenger_team_id_fkey(id, name, crest_url, crest_preset), challenged_team:teams!team_challenges_challenged_team_id_fkey(id, name, crest_url, crest_preset)")
-      .or(myTeamIds.map((id: string) => `challenger_team_id.eq.${id},challenged_team_id.eq.${id}`).join(","))
-      .order("created_at", { ascending: false })
-      .limit(3);
-    recentChallenges = challenges ?? [];
-  }
-
   // ── Right sidebar: trending posts (5 most liked) ──
   const { data: trendingPosts } = await supabase
     .from("posts")
@@ -183,7 +163,6 @@ export default async function SocialPage() {
       unreadMessages={unreadMessages ?? 0}
       initialPosts={enrichedPosts}
       pendingFriendRequests={(pendingFriendRequests ?? []) as any}
-      recentChallenges={recentChallenges}
       trendingPosts={(trendingPosts ?? []) as any}
     />
   );

@@ -91,7 +91,7 @@ export default function TeamCreationForm({ userId, hasSignedCharter }: TeamCreat
       return;
     }
 
-    router.push(`/social/teams/${team.id}`);
+    router.push(`/teams/${team.id}`);
   };
 
   const initials = name

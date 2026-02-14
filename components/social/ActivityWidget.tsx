@@ -27,34 +27,11 @@ interface PendingRequest {
   };
 }
 
-interface RecentChallenge {
-  id: string;
-  challenger_team: { id: string; name: string; crest_url: string | null; crest_preset: string | null };
-  challenged_team: { id: string; name: string; crest_url: string | null; crest_preset: string | null };
-  status: string;
-  created_at: string;
-}
-
 interface ActivityWidgetProps {
   pendingRequests: PendingRequest[];
-  recentChallenges: RecentChallenge[];
   trendingPosts: TrendingPost[];
   userId: string;
 }
-
-/* ------------------------------------------------------------------ */
-/*  Status badge colors                                                */
-/* ------------------------------------------------------------------ */
-
-const statusColors: Record<string, string> = {
-  proposed: "bg-amber-500/10 text-amber-400",
-  accepted: "bg-pitch-500/10 text-pitch-400",
-  declined: "bg-red-500/10 text-red-400",
-  scheduled: "bg-blue-500/10 text-blue-400",
-  in_progress: "bg-blue-500/10 text-blue-400",
-  completed: "bg-surface-600/20 text-surface-400",
-  canceled: "bg-surface-600/20 text-surface-500",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -73,22 +50,11 @@ function timeAgo(dateStr: string): string {
   return `${weeks}w`;
 }
 
-function MiniCrest({ team }: { team: { name: string; crest_url: string | null; crest_preset: string | null } }) {
-  if (team.crest_url) {
-    return <img src={team.crest_url} alt="" className="w-6 h-6 rounded-md object-cover" />;
-  }
-  return (
-    <div className="w-6 h-6 rounded-md bg-pitch-900 flex items-center justify-center text-pitch-400 text-[8px] font-bold">
-      {team.name.substring(0, 2).toUpperCase()}
-    </div>
-  );
-}
-
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export default function ActivityWidget({ pendingRequests, recentChallenges, trendingPosts, userId }: ActivityWidgetProps) {
+export default function ActivityWidget({ pendingRequests, trendingPosts, userId }: ActivityWidgetProps) {
   const { t } = useTranslation();
   const [requests, setRequests] = useState<PendingRequest[]>(pendingRequests);
 
@@ -101,7 +67,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
     setRequests((prev) => prev.filter((r) => r.id !== friendshipId));
   };
 
-  const hasActivity = requests.length > 0 || recentChallenges.length > 0;
+  const hasActivity = requests.length > 0;
   const hasTrending = trendingPosts.length > 0;
 
   if (!hasActivity && !hasTrending) return null;
@@ -115,7 +81,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
 
           {/* Friend requests */}
           {requests.length > 0 && (
-            <div className="mb-3">
+            <div>
               <span className="text-[10px] uppercase tracking-wider text-surface-500">
                 {t.social.activity.friendRequests}
               </span>
@@ -150,33 +116,6 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
               >
                 {t.social.activity.seeMore} &rarr;
               </Link>
-            </div>
-          )}
-
-          {/* Recent challenges */}
-          {recentChallenges.length > 0 && (
-            <div>
-              <span className="text-[10px] uppercase tracking-wider text-surface-500">
-                {t.social.activity.recentChallenges}
-              </span>
-
-              <div className="mt-2 space-y-2">
-                {recentChallenges.map((challenge) => {
-                  const statusKey = challenge.status as keyof typeof t.social.challenges.status;
-                  return (
-                    <div key={challenge.id} className="flex items-center gap-2">
-                      <MiniCrest team={challenge.challenger_team} />
-                      <span className="text-[10px] font-bold text-surface-500">VS</span>
-                      <MiniCrest team={challenge.challenged_team} />
-                      <span
-                        className={`ml-auto px-2 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${statusColors[challenge.status] ?? "bg-surface-600/20 text-surface-400"}`}
-                      >
-                        {t.social.challenges.status[statusKey]}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           )}
         </div>

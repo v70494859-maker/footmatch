@@ -155,7 +155,7 @@ export default function ProfileWidget({
             <span className="text-xs text-surface-500">{t.social.profileWidget.matches}</span>
           </div>
           <Link
-            href="/social/teams"
+            href="/teams"
             className="flex flex-col items-center py-3 hover:bg-surface-800/50 transition-colors"
           >
             <span className="text-base font-bold text-surface-50">
@@ -196,7 +196,7 @@ export default function ProfileWidget({
 
         {/* Teams */}
         <Link
-          href="/social/teams"
+          href="/teams"
           className="flex items-center gap-3 px-4 py-3 hover:bg-surface-800/50 transition-colors border-b border-surface-800/50"
         >
           <svg

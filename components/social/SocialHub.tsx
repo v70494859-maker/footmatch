@@ -136,7 +136,7 @@ export default function SocialHub({
           <span className="text-sm font-medium text-pitch-300">Trouver amis</span>
         </Link>
         <Link
-          href="/social/teams/create"
+          href="/teams/create"
           className="flex items-center justify-center gap-2 bg-surface-900 border border-surface-800 rounded-xl px-3 py-2.5 hover:border-pitch-500/50 transition-colors"
         >
           <svg className="w-4 h-4 text-pitch-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -219,7 +219,7 @@ export default function SocialHub({
 
       {/* ── 4. Team Section ─────────────────────────────── */}
       <Link
-        href="/social/teams"
+        href="/teams"
         className="block bg-surface-900 border border-surface-800 rounded-2xl p-4 hover:border-surface-700 transition-colors"
       >
         <div className="flex items-center justify-between mb-3">

@@ -140,7 +140,7 @@ export default function TeamDetailPage({
       .update({ member_count: Math.max(0, team.member_count - 1) })
       .eq("id", team.id);
 
-    router.push("/social/teams");
+    router.push("/teams");
     router.refresh();
   };
 
@@ -156,7 +156,7 @@ export default function TeamDetailPage({
     // Delete team
     await supabase.from("teams").delete().eq("id", team.id);
 
-    router.push("/social/teams");
+    router.push("/teams");
     router.refresh();
   };
 
@@ -370,7 +370,7 @@ export default function TeamDetailPage({
             ))}
             {totalChallenges > 3 && (
               <Link
-                href={`/social/teams/${team.id}/challenges`}
+                href={`/teams/${team.id}/challenges`}
                 className="block text-center text-sm text-pitch-400 hover:text-pitch-300 transition-colors py-2"
               >
                 Voir tous les defis ({totalChallenges})

@@ -28,7 +28,6 @@ interface SocialLayoutProps {
   unreadMessages: number;
   initialPosts: PostWithDetails[];
   pendingFriendRequests: { id: string; requester: { id: string; first_name: string; last_name: string; avatar_url: string | null } }[];
-  recentChallenges: { id: string; challenger_team: { id: string; name: string; crest_url: string | null; crest_preset: string | null }; challenged_team: { id: string; name: string; crest_url: string | null; crest_preset: string | null }; status: string; created_at: string }[];
   trendingPosts: { id: string; caption: string | null; like_count: number; created_at: string }[];
 }
 
@@ -60,7 +59,6 @@ export default function SocialLayout(props: SocialLayoutProps) {
         <aside className="hidden lg:block">
           <ActivityWidget
             pendingRequests={props.pendingFriendRequests}
-            recentChallenges={props.recentChallenges}
             trendingPosts={props.trendingPosts}
             userId={props.userId}
           />

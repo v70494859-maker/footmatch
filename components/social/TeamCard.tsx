@@ -57,7 +57,7 @@ export default function TeamCard({ team, myRole, memberAvatars, challengeCount, 
 
   return (
     <Link
-      href={`/social/teams/${team.id}`}
+      href={`/teams/${team.id}`}
       className="group flex items-center gap-4 bg-surface-900 border border-surface-800 rounded-2xl p-4 hover:border-surface-700 transition-colors"
     >
       {/* Crest */}
