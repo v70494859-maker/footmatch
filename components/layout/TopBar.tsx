@@ -38,7 +38,6 @@ function getPageTitle(pathname: string, t: ReturnType<typeof useTranslation>["t"
   if (pathname.startsWith("/matches")) return t.nav.matches;
   if (pathname.startsWith("/my-matches")) return t.nav.myMatches;
   if (pathname.startsWith("/subscription")) return t.nav.subscription;
-  if (pathname.startsWith("/leaderboard")) return t.nav.leaderboard;
   if (pathname.startsWith("/social")) return t.nav.social;
   if (pathname.startsWith("/profile")) return t.nav.profile;
   if (pathname.startsWith("/operator/payouts")) return t.nav.payments;
