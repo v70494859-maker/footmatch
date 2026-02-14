@@ -100,6 +100,43 @@ export default async function SocialPage() {
     f.requester_id === user.id ? f.addressee : f.requester
   );
 
+  // ── Friends' upcoming matches ──
+  const friendIds = (friendships ?? []).map((f) =>
+    f.requester_id === user.id ? f.addressee_id : f.requester_id
+  );
+
+  let friendMatchesMap: Record<string, any[]> = {};
+  let myRegisteredMatchIds: string[] = [];
+
+  if (friendIds.length > 0) {
+    const today = new Date().toISOString().split("T")[0];
+
+    const { data: friendMatchRegs } = await supabase
+      .from("match_registrations")
+      .select("player_id, match:matches(id, title, date, start_time, city, venue_name, capacity, registered_count)")
+      .in("player_id", friendIds)
+      .eq("status", "confirmed")
+      .gte("matches.date", today);
+
+    for (const reg of friendMatchRegs ?? []) {
+      if (!reg.match) continue;
+      const m = reg.match as any;
+      if (!m.id) continue;
+      if (!friendMatchesMap[reg.player_id]) friendMatchesMap[reg.player_id] = [];
+      if (friendMatchesMap[reg.player_id].length < 2) {
+        friendMatchesMap[reg.player_id].push(m);
+      }
+    }
+
+    const { data: myRegs } = await supabase
+      .from("match_registrations")
+      .select("match_id")
+      .eq("player_id", user.id)
+      .eq("status", "confirmed");
+
+    myRegisteredMatchIds = (myRegs ?? []).map((r) => r.match_id);
+  }
+
   return (
     <SocialHub
       userId={user.id}
@@ -114,6 +151,8 @@ export default async function SocialPage() {
       sentRequests={(sentRequests ?? []) as any}
       conversations={conversations}
       friendsForDM={friendsForDM}
+      friendMatchesMap={friendMatchesMap}
+      myRegisteredMatchIds={myRegisteredMatchIds}
     />
   );
 }

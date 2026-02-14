@@ -11,9 +11,11 @@ interface FriendsPageProps {
   friends: FriendshipWithProfile[];
   pendingRequests: FriendshipWithProfile[];
   sentRequests: FriendshipWithProfile[];
+  friendMatchesMap: Record<string, any[]>;
+  myRegisteredMatchIds: string[];
 }
 
-export default function FriendsPage({ userId, friends: initialFriends, pendingRequests: initialPending, sentRequests: initialSent }: FriendsPageProps) {
+export default function FriendsPage({ userId, friends: initialFriends, pendingRequests: initialPending, sentRequests: initialSent, friendMatchesMap, myRegisteredMatchIds }: FriendsPageProps) {
   const { t } = useTranslation();
   const [tab, setTab] = useState<"friends" | "requests">("friends");
   const [friends, setFriends] = useState(initialFriends);
@@ -79,6 +81,8 @@ export default function FriendsPage({ userId, friends: initialFriends, pendingRe
           friends={friends}
           getFriendProfile={getFriendProfile}
           onRemoveFriend={handleRemoveFriend}
+          friendMatchesMap={friendMatchesMap}
+          myRegisteredMatchIds={myRegisteredMatchIds}
         />
       )}
 

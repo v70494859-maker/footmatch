@@ -10,11 +10,24 @@ import { getFlagForCountry } from "@/lib/cities";
 import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import AddFriendButton from "./AddFriendButton";
 
+interface FriendMatch {
+  id: string;
+  title: string;
+  date: string;
+  start_time: string;
+  city: string;
+  venue_name: string;
+  capacity: number;
+  registered_count: number;
+}
+
 interface FriendsListProps {
   userId: string;
   friends: FriendshipWithProfile[];
   getFriendProfile: (f: FriendshipWithProfile) => Profile;
   onRemoveFriend: (friendshipId: string) => void;
+  friendMatchesMap: Record<string, FriendMatch[]>;
+  myRegisteredMatchIds: string[];
 }
 
 function FriendAvatar({ profile }: { profile: Profile }) {
@@ -71,7 +84,42 @@ function FriendInfo({ profile }: { profile: Profile }) {
   );
 }
 
-export default function FriendsList({ userId, friends, getFriendProfile, onRemoveFriend }: FriendsListProps) {
+function formatMatchDate(date: string, startTime: string) {
+  const d = new Date(date + "T" + startTime);
+  const day = d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  return `${day}, ${time}`;
+}
+
+function FriendMatchBadge({ match, isRegistered, isFull, t }: { match: FriendMatch; isRegistered: boolean; isFull: boolean; t: any }) {
+  return (
+    <div className="flex items-center justify-between gap-2 bg-surface-800/50 rounded-lg px-2.5 py-1.5">
+      <div className="flex items-center gap-1.5 min-w-0">
+        <span className="text-[11px] shrink-0">🏟</span>
+        <span className="text-xs text-surface-300 truncate">{match.title}</span>
+        <span className="text-[10px] text-surface-500 shrink-0">{formatMatchDate(match.date, match.start_time)}</span>
+      </div>
+      {isRegistered ? (
+        <span className="text-[10px] font-medium text-pitch-400 bg-pitch-400/10 px-2 py-0.5 rounded-full shrink-0">
+          {t.social.friends.registered}
+        </span>
+      ) : isFull ? (
+        <span className="text-[10px] font-medium text-surface-500 bg-surface-800 px-2 py-0.5 rounded-full shrink-0">
+          {t.social.friends.full}
+        </span>
+      ) : (
+        <Link
+          href={`/matches/${match.id}`}
+          className="text-[10px] font-semibold text-surface-950 bg-pitch-400 hover:bg-pitch-300 px-2 py-0.5 rounded-full transition-colors shrink-0"
+        >
+          {t.social.friends.join}
+        </Link>
+      )}
+    </div>
+  );
+}
+
+export default function FriendsList({ userId, friends, getFriendProfile, onRemoveFriend, friendMatchesMap, myRegisteredMatchIds }: FriendsListProps) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
@@ -160,19 +208,36 @@ export default function FriendsList({ userId, friends, getFriendProfile, onRemov
         <div className="space-y-2">
           {filteredFriends.map((friendship) => {
             const profile = getFriendProfile(friendship);
+            const matches = friendMatchesMap[profile.id] ?? [];
+            const myRegSet = new Set(myRegisteredMatchIds);
             return (
-              <div key={friendship.id} className="flex items-center gap-3 bg-surface-900 border border-surface-800 rounded-xl p-3">
-                <Link href={`/players/${profile.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                  <FriendAvatar profile={profile} />
-                  <FriendInfo profile={profile} />
-                </Link>
-                <button
-                  onClick={() => handleRemove(friendship.id)}
-                  disabled={removingId === friendship.id}
-                  className="text-xs text-surface-500 hover:text-danger-500 transition-colors px-2 py-1 disabled:opacity-50"
-                >
-                  {t.social.friends.removeFriend}
-                </button>
+              <div key={friendship.id} className="bg-surface-900 border border-surface-800 rounded-xl p-3">
+                <div className="flex items-center gap-3">
+                  <Link href={`/players/${profile.id}`} className="flex items-center gap-3 flex-1 min-w-0">
+                    <FriendAvatar profile={profile} />
+                    <FriendInfo profile={profile} />
+                  </Link>
+                  <button
+                    onClick={() => handleRemove(friendship.id)}
+                    disabled={removingId === friendship.id}
+                    className="text-xs text-surface-500 hover:text-danger-500 transition-colors px-2 py-1 disabled:opacity-50"
+                  >
+                    {t.social.friends.removeFriend}
+                  </button>
+                </div>
+                {matches.length > 0 && (
+                  <div className="mt-2 space-y-1.5 pl-[52px]">
+                    {matches.map((match) => (
+                      <FriendMatchBadge
+                        key={match.id}
+                        match={match}
+                        isRegistered={myRegSet.has(match.id)}
+                        isFull={match.registered_count >= match.capacity}
+                        t={t}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}

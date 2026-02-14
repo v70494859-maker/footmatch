@@ -30,6 +30,8 @@ interface SocialHubProps {
   sentRequests: FriendshipWithProfile[];
   conversations: any[];
   friendsForDM: Pick<Profile, "id" | "first_name" | "last_name" | "avatar_url">[];
+  friendMatchesMap: Record<string, any[]>;
+  myRegisteredMatchIds: string[];
 }
 
 export default function SocialHub({
@@ -45,6 +47,8 @@ export default function SocialHub({
   sentRequests: initialSent,
   conversations,
   friendsForDM,
+  friendMatchesMap,
+  myRegisteredMatchIds,
 }: SocialHubProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("friends");
@@ -160,6 +164,8 @@ export default function SocialHub({
                   friends={friends}
                   getFriendProfile={getFriendProfile}
                   onRemoveFriend={handleRemoveFriend}
+                  friendMatchesMap={friendMatchesMap}
+                  myRegisteredMatchIds={myRegisteredMatchIds}
                 />
               )}
 

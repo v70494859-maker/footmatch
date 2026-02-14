@@ -14,6 +14,10 @@ const social = {
         requestAccepted: "Demande acceptée", requestRejected: "Demande refusée",
         friendRemoved: "Ami retiré", alreadyFriends: "Vous êtes déjà amis",
         pending: "En attente",
+        upcomingMatch: "Prochain match",
+        join: "Rejoindre",
+        registered: "Inscrit",
+        full: "Complet",
       },
       teams: {
         title: "Teams", myTeams: "Mes teams", createTeam: "Créer une team",
@@ -88,6 +92,10 @@ const social = {
         requestAccepted: "Request accepted", requestRejected: "Request rejected",
         friendRemoved: "Friend removed", alreadyFriends: "You are already friends",
         pending: "Pending",
+        upcomingMatch: "Upcoming match",
+        join: "Join",
+        registered: "Registered",
+        full: "Full",
       },
       teams: {
         title: "Teams", myTeams: "My teams", createTeam: "Create a team",
@@ -162,6 +170,10 @@ const social = {
         requestAccepted: "Solicitud aceptada", requestRejected: "Solicitud rechazada",
         friendRemoved: "Amigo eliminado", alreadyFriends: "Ya son amigos",
         pending: "Pendiente",
+        upcomingMatch: "Próximo partido",
+        join: "Unirse",
+        registered: "Inscrito",
+        full: "Completo",
       },
       teams: {
         title: "Teams", myTeams: "Mis teams", createTeam: "Crear un team",
