@@ -46,6 +46,13 @@ body {
   color: var(--foreground);
 }
 
+/* Small screen adjustments (<320px) */
+@media (max-width: 319px) {
+  html {
+    font-size: 14px;
+  }
+}
+
 /* Animated flag avatar */
 @keyframes flag-wave {
   0%, 100% { background-position: 0% 50%; }
