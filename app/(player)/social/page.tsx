@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import SocialLayout from "@/components/social/SocialLayout";
+import { enrichMatchRecaps } from "@/lib/social/enrich-match-recaps";
 
 export const dynamic = "force-dynamic";
 
@@ -119,12 +120,15 @@ export default async function SocialPage() {
     }
   }
 
-  const enrichedPosts = (posts ?? []).map((p: any) => ({
+  const basicEnrichedPosts = (posts ?? []).map((p: any) => ({
     ...p,
     user_has_liked: likedPostIds.includes(p.id),
     user_has_bookmarked: bookmarkedPostIds.includes(p.id),
     post_poll: pollsByPostId[p.id] ?? null,
   }));
+
+  // ── Enrich match recap posts ──
+  const enrichedPosts = await enrichMatchRecaps(supabase, basicEnrichedPosts);
 
   // ── Right sidebar: pending friend requests (3) ──
   const { data: pendingFriendRequests } = await supabase
@@ -167,6 +171,7 @@ export default async function SocialPage() {
     <SocialLayout
       userId={user.id}
       isAdmin={isAdmin}
+      userRole={profile?.role ?? "player"}
       profile={profile!}
       level={gamification?.level ?? 1}
       totalXp={gamification?.total_xp ?? 0}

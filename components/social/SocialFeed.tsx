@@ -5,15 +5,17 @@ import type { PostWithDetails, PostReactionType } from "@/types";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import { createClient } from "@/lib/supabase/client";
 import PostCard from "@/components/social/PostCard";
+import MatchRecapCard from "@/components/social/MatchRecapCard";
 import PostCreationForm from "@/components/social/PostCreationForm";
 
 interface SocialFeedProps {
   userId: string;
   initialPosts: PostWithDetails[];
   isAdmin?: boolean;
+  userRole?: string;
 }
 
-export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeedProps) {
+export default function SocialFeed({ userId, initialPosts, isAdmin, userRole }: SocialFeedProps) {
   const { t } = useTranslation();
   const supabase = createClient();
   const [posts, setPosts] = useState<PostWithDetails[]>(initialPosts);
@@ -22,6 +24,8 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
   const [hasMore, setHasMore] = useState(initialPosts.length >= 20);
   const [newPostCount, setNewPostCount] = useState(0);
   const observerRef = useRef<HTMLDivElement>(null);
+
+  const canCreatePost = userRole === "operator" || userRole === "admin";
 
   // Realtime subscription for new posts
   useEffect(() => {
@@ -35,10 +39,10 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
           table: "posts",
         },
         async (payload) => {
-          const newPost = payload.new as { id: string; author_id: string };
+          const newPost = payload.new as { id: string; author_id: string; match_id?: string };
 
           // Don't add our own posts (already added via handleNewPost)
-          if (newPost.author_id === userId) return;
+          if (newPost.author_id === userId && !newPost.match_id) return;
 
           // Fetch full post details
           const { data: fullPost } = await supabase
@@ -53,6 +57,41 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
             ...fullPost,
             user_has_liked: false,
           };
+
+          // For match recaps, we need to fetch match data
+          if (enriched.match_id) {
+            try {
+              const [
+                { data: matchData },
+                { data: resultData },
+                { data: statsData },
+              ] = await Promise.all([
+                supabase.from("matches").select("*").eq("id", enriched.match_id).single(),
+                supabase.from("match_results").select("*").eq("match_id", enriched.match_id).single(),
+                supabase
+                  .from("match_player_stats")
+                  .select("*, profile:profiles!match_player_stats_user_id_fkey(id, first_name, last_name, avatar_url, origin_country, favorite_club)")
+                  .eq("match_id", enriched.match_id),
+              ]);
+
+              if (matchData && resultData) {
+                const { data: opData } = await supabase
+                  .from("operators")
+                  .select("id, profile_id, rating, total_matches, profile:profiles!operators_profile_id_fkey(id, first_name, last_name, avatar_url, origin_country, favorite_club, city)")
+                  .eq("id", matchData.operator_id)
+                  .single();
+
+                enriched.match_recap = {
+                  match: matchData,
+                  match_result: resultData,
+                  player_stats: statsData ?? [],
+                  operator: opData,
+                } as any;
+              }
+            } catch {
+              // Proceed without match recap data
+            }
+          }
 
           setPosts((prev) => {
             if (prev.some((p) => p.id === enriched.id)) return prev;
@@ -154,10 +193,12 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
 
   return (
     <div>
-      {/* Post creation */}
-      <div className="mb-4">
-        <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
-      </div>
+      {/* Post creation (operators + admins only) */}
+      {canCreatePost && (
+        <div className="mb-4">
+          <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
+        </div>
+      )}
 
       {posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
@@ -174,19 +215,30 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
               d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
             />
           </svg>
-          <p className="text-sm text-surface-500">{t.social.feed.noPosts}</p>
+          <p className="text-sm text-surface-500">{t.social.feed.noMatchRecaps}</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              currentUserId={userId}
-              onReactionChange={handleReactionChange}
-              onCommentAdded={handleCommentAdded}
-            />
-          ))}
+          {posts.map((post) =>
+            post.match_id && post.match_recap ? (
+              <MatchRecapCard
+                key={post.id}
+                post={post}
+                currentUserId={userId}
+                currentUserRole={userRole}
+                onReactionChange={handleReactionChange}
+                onCommentAdded={handleCommentAdded}
+              />
+            ) : (
+              <PostCard
+                key={post.id}
+                post={post}
+                currentUserId={userId}
+                onReactionChange={handleReactionChange}
+                onCommentAdded={handleCommentAdded}
+              />
+            )
+          )}
         </div>
       )}
 

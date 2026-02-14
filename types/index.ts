@@ -556,6 +556,7 @@ export interface Post {
   author_id: string;
   caption: string | null;
   visibility: PostVisibility;
+  match_id: string | null;
   like_count: number;
   comment_count: number;
   created_at: string;
@@ -626,6 +627,13 @@ export interface PostPollWithOptions extends PostPoll {
   total_votes: number;
 }
 
+export interface MatchRecapData {
+  match: Match;
+  match_result: MatchResult;
+  player_stats: MatchPlayerStatsWithProfile[];
+  operator: OperatorWithProfile;
+}
+
 export interface PostWithDetails extends Post {
   author: Profile;
   post_media: PostMedia[];
@@ -634,6 +642,7 @@ export interface PostWithDetails extends Post {
   user_reaction?: PostReactionType | null;
   reaction_summary?: { type: PostReactionType; count: number }[];
   post_poll?: PostPollWithOptions | null;
+  match_recap?: MatchRecapData | null;
 }
 
 export interface PostBookmark {

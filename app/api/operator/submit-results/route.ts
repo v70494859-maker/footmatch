@@ -146,7 +146,69 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error("[gamification] Error processing match:", err);
-    // Don't fail the whole request if gamification fails
+  }
+
+  // 7. Auto-generate match recap post
+  try {
+    const { data: fullMatch } = await serviceClient
+      .from("matches")
+      .select("*")
+      .eq("id", body.match_id)
+      .single();
+
+    if (fullMatch) {
+      // Find MVP name
+      const mvpStat = body.player_stats.find((ps) => ps.mvp);
+      let mvpName: string | null = null;
+      if (mvpStat) {
+        const { data: mvpProfile } = await serviceClient
+          .from("profiles")
+          .select("first_name, last_name")
+          .eq("id", mvpStat.user_id)
+          .single();
+        if (mvpProfile) mvpName = `${mvpProfile.first_name} ${mvpProfile.last_name}`;
+      }
+
+      // Build caption
+      const resultLabel =
+        body.score_team_a > body.score_team_b
+          ? "Victoire Equipe A"
+          : body.score_team_b > body.score_team_a
+            ? "Victoire Equipe B"
+            : "Match nul";
+
+      const captionParts = [
+        `${resultLabel} ${body.score_team_a} - ${body.score_team_b}`,
+        `${fullMatch.venue_name}, ${fullMatch.city}`,
+      ];
+      if (mvpName) captionParts.push(`MVP: ${mvpName}`);
+      if (body.notes) captionParts.push(body.notes);
+
+      const { data: recapPost } = await serviceClient
+        .from("posts")
+        .insert({
+          author_id: operator.profile_id,
+          caption: captionParts.join(" | "),
+          visibility: "public",
+          match_id: body.match_id,
+          like_count: 0,
+          comment_count: 0,
+        })
+        .select("id")
+        .single();
+
+      // Attach match image as first media if available
+      if (recapPost && fullMatch.image_url) {
+        await serviceClient.from("post_media").insert({
+          post_id: recapPost.id,
+          media_type: "image",
+          media_url: fullMatch.image_url,
+          sort_order: 0,
+        });
+      }
+    }
+  } catch (err) {
+    console.error("[social] Error creating match recap post:", err);
   }
 
   return NextResponse.json({ ok: true });

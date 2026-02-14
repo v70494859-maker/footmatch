@@ -2,6 +2,8 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { PostWithDetails } from "@/types";
 import PostCard from "@/components/social/PostCard";
+import MatchRecapCard from "@/components/social/MatchRecapCard";
+import { enrichMatchRecaps } from "@/lib/social/enrich-match-recaps";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +29,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
 
   const { data: post } = await supabase
     .from("posts")
@@ -75,12 +83,18 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     };
   }
 
-  const enriched: PostWithDetails = {
+  let enriched: PostWithDetails = {
     ...post as any,
     user_has_liked: (likes ?? []).length > 0,
     user_has_bookmarked: (bookmarks ?? []).length > 0,
     post_poll: postPoll,
   };
+
+  // Enrich match recap if applicable
+  const [enrichedPost] = await enrichMatchRecaps(supabase, [enriched]);
+  enriched = enrichedPost;
+
+  const isMatchRecap = enriched.match_id && enriched.match_recap;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -93,11 +107,20 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         </svg>
         Social
       </a>
-      <PostCard
-        post={enriched}
-        currentUserId={user.id}
-        onCommentAdded={() => {}}
-      />
+      {isMatchRecap ? (
+        <MatchRecapCard
+          post={enriched}
+          currentUserId={user.id}
+          currentUserRole={profile?.role}
+          onCommentAdded={() => {}}
+        />
+      ) : (
+        <PostCard
+          post={enriched}
+          currentUserId={user.id}
+          onCommentAdded={() => {}}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { enrichMatchRecaps } from "@/lib/social/enrich-match-recaps";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -122,12 +123,14 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const enriched = (posts ?? []).map(p => ({
+  const basicEnriched = (posts ?? []).map(p => ({
     ...p,
     user_has_liked: likedPostIds.includes(p.id),
     user_has_bookmarked: bookmarkedPostIds.includes(p.id),
     post_poll: pollsByPostId[p.id] ?? null,
   }));
+
+  const enriched = await enrichMatchRecaps(supabase, basicEnriched);
 
   return NextResponse.json({ posts: enriched });
 }

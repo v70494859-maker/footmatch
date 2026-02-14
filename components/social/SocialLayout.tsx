@@ -8,6 +8,7 @@ import SocialFeed from "./SocialFeed";
 interface SocialLayoutProps {
   userId: string;
   isAdmin: boolean;
+  userRole: string;
   profile: {
     id: string;
     first_name: string;
@@ -52,7 +53,7 @@ export default function SocialLayout(props: SocialLayoutProps) {
 
         {/* Center: Feed */}
         <main className="min-w-0">
-          <SocialFeed userId={props.userId} initialPosts={props.initialPosts} isAdmin={props.isAdmin} />
+          <SocialFeed userId={props.userId} initialPosts={props.initialPosts} isAdmin={props.isAdmin} userRole={props.userRole} />
         </main>
 
         {/* Right: Activity (hidden on mobile) */}
