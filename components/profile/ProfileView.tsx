@@ -343,7 +343,7 @@ export default function ProfileView({
 
       {/* Stats strip */}
       {playerExtra && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <div className="rounded-xl bg-surface-900 border border-surface-800 px-3 py-2.5 text-center">
             <p className="text-lg font-bold text-pitch-400">
               {playerExtra.totalRegistrations}
@@ -362,13 +362,38 @@ export default function ProfileView({
             </p>
             <p className="text-[10px] text-surface-500">{t.common.mvp}</p>
           </div>
+        </div>
+      )}
+
+      {/* Reputation stats */}
+      {playerExtra && (
+        <div className="grid grid-cols-3 gap-3">
           <div className="rounded-xl bg-surface-900 border border-surface-800 px-3 py-2.5 text-center">
-            <p className="text-lg font-bold text-foreground">
-              {careerStats
-                ? `${Math.round(careerStats.attendance_rate * 100)}%`
-                : "—"}
+            <p className={`text-lg font-bold ${
+              (careerStats?.attendance_rate ?? 1) >= 0.9 ? "text-pitch-400" :
+              (careerStats?.attendance_rate ?? 1) >= 0.75 ? "text-amber-400" : "text-danger-500"
+            }`}>
+              {careerStats ? `${Math.round(careerStats.attendance_rate * 100)}%` : "—"}
             </p>
-            <p className="text-[10px] text-surface-500">{t.common.reliability}</p>
+            <p className="text-[10px] text-surface-500">{t.reliability.presence}</p>
+          </div>
+          <div className="rounded-xl bg-surface-900 border border-surface-800 px-3 py-2.5 text-center">
+            <p className={`text-lg font-bold ${
+              (careerStats?.late_cancel_count ?? 0) === 0 ? "text-pitch-400" :
+              (careerStats?.late_cancel_count ?? 0) <= 2 ? "text-amber-400" : "text-danger-500"
+            }`}>
+              {careerStats?.late_cancel_count ?? 0}
+            </p>
+            <p className="text-[10px] text-surface-500">{t.reliability.lateCancels}</p>
+          </div>
+          <div className="rounded-xl bg-surface-900 border border-surface-800 px-3 py-2.5 text-center">
+            <p className={`text-lg font-bold ${
+              (careerStats?.no_show_count ?? 0) === 0 ? "text-pitch-400" :
+              (careerStats?.no_show_count ?? 0) <= 2 ? "text-amber-400" : "text-danger-500"
+            }`}>
+              {careerStats?.no_show_count ?? 0}
+            </p>
+            <p className="text-[10px] text-surface-500">{t.reliability.noShow}</p>
           </div>
         </div>
       )}

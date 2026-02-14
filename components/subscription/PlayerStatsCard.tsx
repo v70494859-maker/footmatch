@@ -53,7 +53,9 @@ export default function PlayerStatsCard({ stats }: PlayerStatsCardProps) {
     { label: t.common.assists, value: stats.total_assists },
     { label: t.common.mvp, value: stats.total_mvp },
     { label: t.common.wins, value: `${winRate}%` },
-    { label: t.common.reliability, value: formatAttendanceRate(stats.attendance_rate) },
+    { label: t.reliability.presence, value: formatAttendanceRate(stats.attendance_rate) },
+    { label: t.reliability.lateCancels, value: stats.late_cancel_count ?? 0 },
+    { label: t.reliability.noShow, value: stats.no_show_count ?? 0 },
     { label: t.common.matches, value: stats.total_matches },
   ];
 
