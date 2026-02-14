@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
+import VoiceRecorder from "@/components/chat/VoiceRecorder";
 
 interface ConversationInputProps {
   conversationId: string;
@@ -17,6 +18,7 @@ export default function ConversationInput({
   const supabase = createClient();
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function sendTextMessage() {
     const trimmed = text.trim();
@@ -43,12 +45,103 @@ export default function ConversationInput({
     }
   }
 
+  async function compressImage(file: File): Promise<Blob> {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_W = 1200;
+        let w = img.width;
+        let h = img.height;
+        if (w > MAX_W) {
+          h = Math.round((h * MAX_W) / w);
+          w = MAX_W;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(
+          (blob) => resolve(blob!),
+          "image/jpeg",
+          0.8
+        );
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || sending) return;
+
+    setSending(true);
+    try {
+      const compressed = await compressImage(file);
+      const fileName = `dm/${conversationId}/${currentUserId}/${Date.now()}.jpg`;
+
+      const { data: upload } = await supabase.storage
+        .from("chat-images")
+        .upload(fileName, compressed, { contentType: "image/jpeg" });
+
+      if (!upload) return;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("chat-images").getPublicUrl(upload.path);
+
+      await supabase.from("direct_messages").insert({
+        conversation_id: conversationId,
+        sender_id: currentUserId,
+        type: "image",
+        media_url: publicUrl,
+      });
+    } finally {
+      setSending(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  const handleVoiceRecorded = useCallback(
+    async (blob: Blob, duration: number) => {
+      setSending(true);
+      try {
+        const ext = blob.type.includes("webm") ? "webm" : "mp4";
+        const fileName = `dm/${conversationId}/${currentUserId}/${Date.now()}.${ext}`;
+
+        const { data: upload } = await supabase.storage
+          .from("chat-voice-notes")
+          .upload(fileName, blob, { contentType: blob.type });
+
+        if (!upload) return;
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage
+          .from("chat-voice-notes")
+          .getPublicUrl(upload.path);
+
+        await supabase.from("direct_messages").insert({
+          conversation_id: conversationId,
+          sender_id: currentUserId,
+          type: "voice",
+          media_url: publicUrl,
+          media_duration: duration,
+        });
+      } finally {
+        setSending(false);
+      }
+    },
+    [conversationId, currentUserId, supabase]
+  );
+
   return (
     <div className="sticky bottom-0 bg-background border-t border-surface-800 px-3 py-2">
       <div className="flex items-end gap-2">
-        {/* Image button (placeholder) */}
+        {/* Image upload */}
         <button
           type="button"
+          onClick={() => fileInputRef.current?.click()}
           disabled={sending}
           className="p-2 text-surface-400 hover:text-foreground transition-colors disabled:opacity-40 shrink-0"
           title={t.social.messages.image}
@@ -67,28 +160,16 @@ export default function ConversationInput({
             />
           </svg>
         </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageSelect}
+          className="hidden"
+        />
 
-        {/* Voice button (placeholder) */}
-        <button
-          type="button"
-          disabled={sending}
-          className="p-2 text-surface-400 hover:text-foreground transition-colors disabled:opacity-40 shrink-0"
-          title={t.social.messages.voice}
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-            />
-          </svg>
-        </button>
+        {/* Voice recorder */}
+        <VoiceRecorder onRecorded={handleVoiceRecorded} disabled={sending} />
 
         {/* Text input */}
         <textarea

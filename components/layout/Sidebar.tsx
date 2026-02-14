@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { UserRole } from "@/types";
 import Logo from "@/components/ui/Logo";
+import NotificationBell from "@/components/ui/NotificationBell";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 interface NavItem {
@@ -145,8 +146,9 @@ export default function Sidebar({ role }: SidebarProps) {
 
   return (
     <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-950 border-r border-surface-800 min-h-screen">
-      <div className="px-5 py-5">
+      <div className="px-5 py-5 flex items-center justify-between">
         <Logo variant="full" />
+        <NotificationBell />
       </div>
 
       <nav className="flex-1 px-3 py-2 space-y-1">

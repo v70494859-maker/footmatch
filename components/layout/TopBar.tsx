@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/ui/Logo";
+import NotificationBell from "@/components/ui/NotificationBell";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 export default function TopBar() {
@@ -20,15 +21,18 @@ export default function TopBar() {
             {pageTitle}
           </span>
         )}
-        <Link
+        <div className="ml-auto flex items-center gap-2">
+          <NotificationBell />
+          <Link
           href="/profile"
-          className="ml-auto flex items-center justify-center w-8 h-8 rounded-full bg-surface-800 text-surface-400 hover:text-surface-200 transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-surface-800 text-surface-400 hover:text-surface-200 transition-colors"
           aria-label="Profile"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
           </svg>
         </Link>
+        </div>
       </div>
     </header>
   );

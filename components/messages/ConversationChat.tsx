@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import { formatChatTime } from "@/lib/format";
 import ProfileAvatar from "@/components/ui/ProfileAvatar";
+import ImagePreview from "@/components/chat/ImagePreview";
 import ConversationInput from "@/components/messages/ConversationInput";
 import type {
   Profile,
@@ -277,48 +279,14 @@ export default function ConversationChat({
                     </p>
                   )}
 
-                  {/* Image placeholder */}
+                  {/* Image message */}
                   {msg.type === "image" && msg.media_url && (
-                    <div className="flex items-center gap-1.5 text-surface-400">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"
-                        />
-                      </svg>
-                      <span className="text-xs">
-                        {t.social.messages.image}
-                      </span>
-                    </div>
+                    <DmImage url={msg.media_url} />
                   )}
 
-                  {/* Voice placeholder */}
+                  {/* Voice message */}
                   {msg.type === "voice" && msg.media_url && (
-                    <div className="flex items-center gap-1.5 text-surface-400">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                        />
-                      </svg>
-                      <span className="text-xs">
-                        {t.social.messages.voice}
-                      </span>
-                    </div>
+                    <DmVoicePlayer url={msg.media_url} duration={msg.media_duration} />
                   )}
 
                   {/* Timestamp */}
@@ -344,6 +312,110 @@ export default function ConversationChat({
         conversationId={conversationId}
         currentUserId={userId}
       />
+    </div>
+  );
+}
+
+function DmImage({ url }: { url: string }) {
+  const [showPreview, setShowPreview] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setShowPreview(true)}
+        className="block rounded-lg overflow-hidden"
+      >
+        <Image
+          src={url}
+          alt="Chat image"
+          width={256}
+          height={256}
+          className="object-cover max-w-64 rounded-lg"
+          unoptimized
+        />
+      </button>
+      {showPreview && (
+        <ImagePreview
+          src={url}
+          alt="Chat image"
+          onClose={() => setShowPreview(false)}
+        />
+      )}
+    </>
+  );
+}
+
+function DmVoicePlayer({ url, duration }: { url: string; duration: number | null }) {
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  function handlePlay() {
+    if (audioRef.current) {
+      if (playing) {
+        audioRef.current.pause();
+        setPlaying(false);
+        return;
+      }
+      audioRef.current.play();
+      setPlaying(true);
+      return;
+    }
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+
+    audio.ontimeupdate = () => {
+      if (audio.duration) {
+        setProgress((audio.currentTime / audio.duration) * 100);
+      }
+    };
+    audio.onended = () => {
+      setPlaying(false);
+      setProgress(0);
+      audioRef.current = null;
+    };
+
+    audio.play();
+    setPlaying(true);
+  }
+
+  const formatDur = (s: number | null) => {
+    if (!s) return "0:00";
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  return (
+    <div className="flex items-center gap-2 min-w-[140px]">
+      <button
+        type="button"
+        onClick={handlePlay}
+        className="w-8 h-8 rounded-full bg-pitch-500/20 flex items-center justify-center shrink-0"
+      >
+        {playing ? (
+          <svg className="w-4 h-4 text-pitch-400" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
+          </svg>
+        ) : (
+          <svg className="w-4 h-4 text-pitch-400 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        )}
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="h-1 bg-surface-700 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-pitch-400 rounded-full transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-[10px] text-surface-500 mt-0.5">
+          {formatDur(duration)}
+        </p>
+      </div>
     </div>
   );
 }

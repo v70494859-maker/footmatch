@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { PostWithDetails } from "@/types";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
+import { createClient } from "@/lib/supabase/client";
 import PostCard from "@/components/social/PostCard";
 import PostCreationForm from "@/components/social/PostCreationForm";
 
@@ -14,14 +15,71 @@ interface SocialFeedProps {
 
 export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeedProps) {
   const { t } = useTranslation();
+  const supabase = createClient();
   const [posts, setPosts] = useState<PostWithDetails[]>(initialPosts);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(initialPosts.length >= 20);
+  const [newPostCount, setNewPostCount] = useState(0);
   const observerRef = useRef<HTMLDivElement>(null);
+
+  // Realtime subscription for new posts
+  useEffect(() => {
+    const channel = supabase
+      .channel("social-feed")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "posts",
+        },
+        async (payload) => {
+          const newPost = payload.new as { id: string; author_id: string };
+
+          // Don't add our own posts (already added via handleNewPost)
+          if (newPost.author_id === userId) return;
+
+          // Fetch full post details
+          const { data: fullPost } = await supabase
+            .from("posts")
+            .select("*, author:profiles!posts_author_id_fkey(id, first_name, last_name, avatar_url, city, origin_country, favorite_club), post_media(*)")
+            .eq("id", newPost.id)
+            .single();
+
+          if (!fullPost) return;
+
+          const enriched: PostWithDetails = {
+            ...fullPost,
+            user_has_liked: false,
+          };
+
+          setPosts((prev) => {
+            if (prev.some((p) => p.id === enriched.id)) return prev;
+            return [enriched, ...prev];
+          });
+          setNewPostCount((prev) => prev + 1);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, supabase]);
+
+  // Clear new post indicator after 5 seconds
+  useEffect(() => {
+    if (newPostCount > 0) {
+      const timer = setTimeout(() => setNewPostCount(0), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [newPostCount]);
 
   const loadMore = useCallback(async () => {
     if (loading || !hasMore || posts.length === 0) return;
     setLoading(true);
+    setError(false);
 
     const lastPost = posts[posts.length - 1];
     const cursor = lastPost.created_at;
@@ -42,7 +100,7 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
         return [...prev, ...unique];
       });
     } catch {
-      // Silently fail, user can scroll again
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -136,6 +194,14 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
       <div ref={observerRef} className="h-10 flex items-center justify-center">
         {loading && (
           <div className="w-5 h-5 border-2 border-surface-700 border-t-pitch-400 rounded-full animate-spin" />
+        )}
+        {error && (
+          <button
+            onClick={() => { setError(false); loadMore(); }}
+            className="text-xs text-pitch-400 hover:text-pitch-300 transition-colors px-3 py-1.5 bg-surface-900 rounded-lg border border-surface-800"
+          >
+            {t.common.error} — {t.common.retry}
+          </button>
         )}
       </div>
     </div>
