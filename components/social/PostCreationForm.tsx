@@ -63,6 +63,7 @@ export default function PostCreationForm({ userId, onPostCreated }: PostCreation
   const [visibility, setVisibility] = useState<PostVisibility>("public");
   const [mediaPreviews, setMediaPreviews] = useState<MediaPreview[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +99,7 @@ export default function PostCreationForm({ userId, onPostCreated }: PostCreation
   const handleSubmit = async () => {
     if (!caption.trim() && mediaPreviews.length === 0) return;
     setSubmitting(true);
+    setError(null);
 
     const supabase = createClient();
 
@@ -187,7 +189,7 @@ export default function PostCreationForm({ userId, onPostCreated }: PostCreation
       setMediaPreviews([]);
       setExpanded(false);
     } catch {
-      // Could add error toast here
+      setError(t.common.error);
     } finally {
       setSubmitting(false);
     }
@@ -320,6 +322,11 @@ export default function PostCreationForm({ userId, onPostCreated }: PostCreation
           </button>
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-1.5 mt-2">{error}</p>
+      )}
 
       {/* Hints */}
       <div className="flex items-center gap-3 mt-2">

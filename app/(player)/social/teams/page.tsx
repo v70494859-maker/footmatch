@@ -56,27 +56,21 @@ export default async function TeamsRoute() {
     }
   }
 
-  // Fetch challenge counts per team
-  let teamChallengeCounts: Record<string, number> = {};
+  // Fetch challenge counts per team using count queries
+  const teamChallengeCounts: Record<string, number> = {};
 
   if (teamIds.length > 0) {
-    // We need to count challenges for each team. Since Supabase doesn't support
-    // group-by easily in JS client, fetch all relevant challenges and count in JS.
-    const { data: challenges } = await supabase
-      .from("team_challenges")
-      .select("challenger_team_id, challenged_team_id")
-      .or(teamIds.map((id: string) => `challenger_team_id.eq.${id},challenged_team_id.eq.${id}`).join(","));
+    const countPromises = teamIds.map(async (id: string) => {
+      const { count } = await supabase
+        .from("team_challenges")
+        .select("id", { count: "exact", head: true })
+        .or(`challenger_team_id.eq.${id},challenged_team_id.eq.${id}`);
+      return { id, count: count ?? 0 };
+    });
 
-    if (challenges) {
-      const teamIdSet = new Set(teamIds);
-      for (const c of challenges) {
-        if (teamIdSet.has(c.challenger_team_id)) {
-          teamChallengeCounts[c.challenger_team_id] = (teamChallengeCounts[c.challenger_team_id] ?? 0) + 1;
-        }
-        if (teamIdSet.has(c.challenged_team_id)) {
-          teamChallengeCounts[c.challenged_team_id] = (teamChallengeCounts[c.challenged_team_id] ?? 0) + 1;
-        }
-      }
+    const counts = await Promise.all(countPromises);
+    for (const { id, count } of counts) {
+      teamChallengeCounts[id] = count;
     }
   }
 

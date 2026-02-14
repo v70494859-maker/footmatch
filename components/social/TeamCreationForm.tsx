@@ -84,6 +84,8 @@ export default function TeamCreationForm({ userId, hasSignedCharter }: TeamCreat
       });
 
     if (memberError) {
+      // Rollback: delete the team since the captain couldn't be added
+      await supabase.from("teams").delete().eq("id", team.id);
       setError(memberError.message);
       setCreating(false);
       return;

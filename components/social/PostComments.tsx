@@ -37,6 +37,7 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch comments on mount
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
     if (!content.trim() || submitting) return;
 
     setSubmitting(true);
+    setError(null);
     const supabase = createClient();
 
     try {
@@ -79,7 +81,7 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
       setContent("");
       onCommentAdded();
     } catch {
-      // Could add error feedback
+      setError(t.common.error);
     } finally {
       setSubmitting(false);
     }
@@ -136,6 +138,11 @@ export default function PostComments({ postId, currentUserId, onCommentAdded }: 
             );
           })}
         </div>
+      )}
+
+      {/* Error message */}
+      {error && (
+        <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-1.5 mb-2">{error}</p>
       )}
 
       {/* Comment input */}

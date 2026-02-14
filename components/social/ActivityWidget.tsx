@@ -111,13 +111,13 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
       {/* ---- CARD 1 — Activité ---- */}
       {hasActivity && (
         <div className="bg-surface-900 border border-surface-800 rounded-2xl p-4">
-          <h3 className="text-sm font-bold text-surface-100 mb-3">Activit&eacute;</h3>
+          <h3 className="text-sm font-bold text-surface-100 mb-3">{t.social.activity.title}</h3>
 
           {/* Friend requests */}
           {requests.length > 0 && (
             <div className="mb-3">
               <span className="text-[10px] uppercase tracking-wider text-surface-500">
-                Demandes d&apos;amis
+                {t.social.activity.friendRequests}
               </span>
 
               <div className="mt-2 space-y-2">
@@ -138,7 +138,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
                       onClick={() => handleAccept(req.id)}
                       className="px-2 py-1 bg-pitch-400 text-surface-950 text-[10px] font-bold rounded-lg hover:bg-pitch-300 transition-colors shrink-0"
                     >
-                      Accepter
+                      {t.social.friends.accept}
                     </button>
                   </div>
                 ))}
@@ -148,7 +148,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
                 href="/social/friends"
                 className="block mt-2 text-[10px] text-surface-500 hover:text-pitch-400 transition-colors"
               >
-                Voir plus &rarr;
+                {t.social.activity.seeMore} &rarr;
               </Link>
             </div>
           )}
@@ -157,7 +157,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
           {recentChallenges.length > 0 && (
             <div>
               <span className="text-[10px] uppercase tracking-wider text-surface-500">
-                D&eacute;fis r&eacute;cents
+                {t.social.activity.recentChallenges}
               </span>
 
               <div className="mt-2 space-y-2">
@@ -185,7 +185,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
       {/* ---- CARD 2 — Tendances ---- */}
       {hasTrending && (
         <div className="bg-surface-900 border border-surface-800 rounded-2xl p-4">
-          <h3 className="text-sm font-bold text-surface-100 mb-3">Tendances</h3>
+          <h3 className="text-sm font-bold text-surface-100 mb-3">{t.social.trending.title}</h3>
 
           <div className="space-y-3">
             {trendingPosts.map((post) => (
@@ -198,7 +198,7 @@ export default function ActivityWidget({ pendingRequests, recentChallenges, tren
                   {post.caption ?? "..."}
                 </p>
                 <span className="text-[10px] text-surface-500">
-                  {post.like_count} likes &middot; {timeAgo(post.created_at)}
+                  {post.like_count} {t.social.trending.likes} &middot; {timeAgo(post.created_at)}
                 </span>
               </Link>
             ))}
