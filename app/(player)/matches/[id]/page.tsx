@@ -75,7 +75,17 @@ export default async function MatchDetailPage({
   const isRegistered = registrations.some(
     (r) => r.player_id === user.id && r.status === "confirmed"
   );
+  const userStandbyReg = registrations.find(
+    (r) => r.player_id === user.id && r.status === "standby"
+  );
+  const isStandby = !!userStandbyReg;
+  const standbyCount = registrations.filter((r) => r.status === "standby").length;
+  const canStandby = standbyCount < 2 && !isRegistered && !isStandby;
   const hasSubscription = !!subscriptionRes.data;
+
+  // Reset cancel tokens if needed and get current count
+  const { data: tokenData } = await supabase.rpc("reset_cancel_tokens_if_needed", { p_user_id: user.id });
+  const cancelTokens = tokenData ?? 1;
 
   // Batch 2: queries dependent on batch 1
   const [resultRes, messagesRes, chatCountRes] = await Promise.all([
@@ -120,6 +130,10 @@ export default async function MatchDetailPage({
       match={typedMatch}
       registrations={registrations}
       isRegistered={isRegistered}
+      isStandby={isStandby}
+      standbyPosition={userStandbyReg?.standby_position ?? undefined}
+      canStandby={canStandby}
+      cancelTokens={cancelTokens}
       hasSubscription={hasSubscription}
       currentUserId={user.id}
       matchResult={matchResult}

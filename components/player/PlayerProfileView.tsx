@@ -220,10 +220,40 @@ export default function PlayerProfileView({
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center text-xs text-surface-400 border-t border-surface-800 pt-3">
-                <span>
-                  Fiabilit&eacute; : {Math.round(careerStats.attendance_rate * 100)}%
-                </span>
+              <div className="grid grid-cols-3 gap-3 text-center border-t border-surface-800 pt-3">
+                <div>
+                  <p className={`text-sm font-bold ${
+                    careerStats.attendance_rate >= 0.9 ? "text-pitch-400" :
+                    careerStats.attendance_rate >= 0.75 ? "text-amber-400" : "text-danger-500"
+                  }`}>
+                    {Math.round(careerStats.attendance_rate * 100)}%
+                  </p>
+                  <p className="text-[10px] text-surface-500 uppercase tracking-wider">
+                    Pr&eacute;sence
+                  </p>
+                </div>
+                <div>
+                  <p className={`text-sm font-bold ${
+                    careerStats.late_cancel_count === 0 ? "text-pitch-400" :
+                    careerStats.late_cancel_count <= 2 ? "text-amber-400" : "text-danger-500"
+                  }`}>
+                    {careerStats.late_cancel_count}
+                  </p>
+                  <p className="text-[10px] text-surface-500 uppercase tracking-wider">
+                    Retards
+                  </p>
+                </div>
+                <div>
+                  <p className={`text-sm font-bold ${
+                    careerStats.no_show_count === 0 ? "text-pitch-400" :
+                    careerStats.no_show_count <= 2 ? "text-amber-400" : "text-danger-500"
+                  }`}>
+                    {careerStats.no_show_count}
+                  </p>
+                  <p className="text-[10px] text-surface-500 uppercase tracking-wider">
+                    No-show
+                  </p>
+                </div>
               </div>
             </div>
           ) : (

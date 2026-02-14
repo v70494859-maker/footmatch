@@ -29,6 +29,10 @@ interface MatchDetailViewProps {
   match: MatchWithOperator;
   registrations: MatchRegistrationWithProfile[];
   isRegistered: boolean;
+  isStandby: boolean;
+  standbyPosition?: number;
+  canStandby: boolean;
+  cancelTokens: number;
   hasSubscription: boolean;
   currentUserId: string | null;
   matchResult?: MatchResult | null;
@@ -41,6 +45,10 @@ export default function MatchDetailView({
   match,
   registrations,
   isRegistered,
+  isStandby,
+  standbyPosition,
+  canStandby,
+  cancelTokens,
   hasSubscription,
   currentUserId,
   matchResult,
@@ -500,9 +508,15 @@ export default function MatchDetailView({
               match.status !== "canceled" && (
                 <RegisterButton
                   matchId={match.id}
+                  matchDate={match.date}
+                  matchStartTime={match.start_time}
                   isRegistered={isRegistered}
+                  isStandby={isStandby}
+                  standbyPosition={standbyPosition}
                   hasSubscription={hasSubscription}
                   isFull={isFull}
+                  canStandby={canStandby}
+                  cancelTokens={cancelTokens}
                 />
               )}
 
@@ -526,6 +540,41 @@ export default function MatchDetailView({
               </h3>
               <PitchFormation registrations={registrations} capacity={match.capacity} />
             </div>
+
+            {/* Standby list */}
+            {(() => {
+              const standbyRegs = registrations
+                .filter((r) => r.status === "standby")
+                .sort((a, b) => (a.standby_position ?? 99) - (b.standby_position ?? 99));
+              if (standbyRegs.length === 0) return null;
+              return (
+                <div className="bg-amber-400/5 border border-amber-400/15 rounded-xl p-4">
+                  <h3 className="text-sm font-semibold text-amber-400 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {t.reliability.standbyList} ({standbyRegs.length})
+                  </h3>
+                  <div className="space-y-2">
+                    {standbyRegs.map((reg) => (
+                      <div key={reg.id} className="flex items-center gap-2.5">
+                        <span className="text-[10px] font-bold text-amber-400/60 w-4 text-center">
+                          {reg.standby_position}
+                        </span>
+                        <ProfileAvatar
+                          firstName={reg.profile?.first_name ?? "?"}
+                          lastName={reg.profile?.last_name ?? "?"}
+                          size="sm"
+                        />
+                        <span className="text-sm text-surface-300">
+                          {reg.profile?.first_name} {reg.profile?.last_name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           {/* Right column: chat panel */}

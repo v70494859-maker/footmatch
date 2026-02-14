@@ -12,7 +12,7 @@ export type PayoutStatus = "pending" | "processing" | "completed" | "failed";
 
 export type TerrainType = "indoor" | "outdoor" | "covered";
 
-export type RegistrationStatus = "confirmed" | "canceled";
+export type RegistrationStatus = "confirmed" | "canceled" | "standby";
 
 export type MessageType = "text" | "image" | "voice";
 
@@ -120,6 +120,7 @@ export const TERRAIN_TYPE_LABELS: Record<TerrainType, string> = {
 export const REGISTRATION_STATUS_LABELS: Record<RegistrationStatus, string> = {
   confirmed: "Confirmé",
   canceled: "Annulé",
+  standby: "En attente",
 };
 
 export const MATCH_QUALITY_LABELS: Record<MatchQuality, string> = {
@@ -222,6 +223,8 @@ export interface MatchRegistration {
   match_id: string;
   player_id: string;
   status: RegistrationStatus;
+  standby_position: number | null;
+  canceled_at: string | null;
   created_at: string;
 }
 
@@ -307,6 +310,8 @@ export interface PlayerCareerStats {
   draw_count: number;
   loss_count: number;
   attendance_rate: number;
+  no_show_count: number;
+  late_cancel_count: number;
   last_updated: string;
 }
 
