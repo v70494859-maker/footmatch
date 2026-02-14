@@ -6,7 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 import type { Notification, NotificationType } from "@/types";
 import NotificationItem from "@/components/notification/NotificationItem";
 
-export default function NotificationBell() {
+interface NotificationBellProps {
+  align?: "left" | "right";
+}
+
+export default function NotificationBell({ align = "right" }: NotificationBellProps) {
   const supabase = createClient();
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
@@ -103,7 +107,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-10 w-80 max-h-96 overflow-y-auto bg-surface-900 border border-surface-800 rounded-2xl shadow-xl z-50">
+        <div className={`absolute top-10 w-80 max-h-96 overflow-y-auto bg-surface-900 border border-surface-800 rounded-2xl shadow-xl z-50 ${align === "left" ? "left-0" : "right-0"}`}>
           <div className="flex items-center justify-between px-4 py-3 border-b border-surface-800">
             <span className="text-sm font-bold text-surface-100">Notifications</span>
             {unreadCount > 0 && (

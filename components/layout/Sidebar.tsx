@@ -148,7 +148,7 @@ export default function Sidebar({ role }: SidebarProps) {
     <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-950 border-r border-surface-800 min-h-screen">
       <div className="px-5 py-5 flex items-center justify-between">
         <Logo variant="full" />
-        <NotificationBell />
+        <NotificationBell align="left" />
       </div>
 
       <nav className="flex-1 px-3 py-2 space-y-1">
