@@ -586,10 +586,70 @@ export interface PostComment {
   created_at: string;
 }
 
+export type PostReactionType = "like" | "fire" | "goal" | "clap" | "laugh";
+
+export interface PostReaction {
+  id: string;
+  post_id: string;
+  user_id: string;
+  reaction_type: PostReactionType;
+  created_at: string;
+}
+
+export interface PostPoll {
+  id: string;
+  post_id: string;
+  question: string;
+  expires_at: string | null;
+  created_at: string;
+}
+
+export interface PollOption {
+  id: string;
+  poll_id: string;
+  text: string;
+  vote_count: number;
+  sort_order: number;
+}
+
+export interface PollVote {
+  id: string;
+  poll_id: string;
+  option_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface PostPollWithOptions extends PostPoll {
+  poll_options: PollOption[];
+  user_voted_option_id?: string | null;
+  total_votes: number;
+}
+
 export interface PostWithDetails extends Post {
   author: Profile;
   post_media: PostMedia[];
   user_has_liked?: boolean;
+  user_has_bookmarked?: boolean;
+  user_reaction?: PostReactionType | null;
+  reaction_summary?: { type: PostReactionType; count: number }[];
+  post_poll?: PostPollWithOptions | null;
+}
+
+export interface PostBookmark {
+  id: string;
+  post_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface PostMention {
+  id: string;
+  post_id: string | null;
+  comment_id: string | null;
+  mentioned_user_id: string;
+  mentioner_user_id: string;
+  created_at: string;
 }
 
 export interface PostCommentWithAuthor extends PostComment {

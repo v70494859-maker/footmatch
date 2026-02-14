@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { PostWithDetails } from "@/types";
+import type { PostWithDetails, PostReactionType } from "@/types";
 import { useTranslation } from "@/lib/i18n/LanguageContext";
 import { createClient } from "@/lib/supabase/client";
 import PostCard from "@/components/social/PostCard";
@@ -128,17 +128,19 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
     setPosts((prev) => [post, ...prev]);
   };
 
-  const handlePostLikeToggle = (postId: string, liked: boolean) => {
+  const handleReactionChange = (postId: string, reaction: PostReactionType | null) => {
     setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              user_has_liked: liked,
-              like_count: liked ? p.like_count + 1 : Math.max(0, p.like_count - 1),
-            }
-          : p
-      )
+      prev.map((p) => {
+        if (p.id !== postId) return p;
+        const prevReaction = p.user_reaction ?? (p.user_has_liked ? "like" as const : null);
+        const countDelta = reaction && !prevReaction ? 1 : !reaction && prevReaction ? -1 : 0;
+        return {
+          ...p,
+          user_reaction: reaction,
+          user_has_liked: reaction !== null,
+          like_count: Math.max(0, p.like_count + countDelta),
+        };
+      })
     );
   };
 
@@ -152,12 +154,10 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
 
   return (
     <div>
-      {/* Admin-only post creation */}
-      {isAdmin && (
-        <div className="mb-4">
-          <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
-        </div>
-      )}
+      {/* Post creation */}
+      <div className="mb-4">
+        <PostCreationForm userId={userId} onPostCreated={handleNewPost} />
+      </div>
 
       {posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
@@ -183,7 +183,7 @@ export default function SocialFeed({ userId, initialPosts, isAdmin }: SocialFeed
               key={post.id}
               post={post}
               currentUserId={userId}
-              onLikeToggle={handlePostLikeToggle}
+              onReactionChange={handleReactionChange}
               onCommentAdded={handleCommentAdded}
             />
           ))}

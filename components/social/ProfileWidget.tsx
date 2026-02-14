@@ -215,6 +215,27 @@ export default function ProfileWidget({
           <span className="text-sm text-surface-50 flex-1">{t.social.profileWidget.teams}</span>
         </Link>
 
+        {/* Saved */}
+        <Link
+          href="/social/saved"
+          className="flex items-center gap-3 px-4 py-3 hover:bg-surface-800/50 transition-colors border-b border-surface-800/50"
+        >
+          <svg
+            className="w-5 h-5 text-surface-400 shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+            />
+          </svg>
+          <span className="text-sm text-surface-50 flex-1">{t.social.feed.saved}</span>
+        </Link>
+
         {/* Messages */}
         <Link
           href="/social/messages"

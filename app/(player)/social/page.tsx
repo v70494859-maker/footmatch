@@ -78,9 +78,52 @@ export default async function SocialPage() {
     likedPostIds = (likes ?? []).map((l: any) => l.post_id);
   }
 
+  let bookmarkedPostIds: string[] = [];
+  if (postIds.length > 0) {
+    const { data: bookmarks } = await supabase
+      .from("post_bookmarks")
+      .select("post_id")
+      .eq("user_id", user.id)
+      .in("post_id", postIds);
+    bookmarkedPostIds = (bookmarks ?? []).map((b: any) => b.post_id);
+  }
+
+  // ── Polls ──
+  let pollsByPostId: Record<string, any> = {};
+  if (postIds.length > 0) {
+    const { data: polls } = await supabase
+      .from("post_polls")
+      .select("*, poll_options(*)")
+      .in("post_id", postIds);
+
+    if (polls && polls.length > 0) {
+      const pollIds = polls.map((p: any) => p.id);
+      const { data: userVotes } = await supabase
+        .from("poll_votes")
+        .select("poll_id, option_id")
+        .eq("user_id", user.id)
+        .in("poll_id", pollIds);
+
+      const voteMap = new Map((userVotes ?? []).map((v: any) => [v.poll_id, v.option_id]));
+
+      for (const poll of polls) {
+        const options = (poll as any).poll_options ?? [];
+        const totalVotes = options.reduce((sum: number, o: any) => sum + o.vote_count, 0);
+        pollsByPostId[poll.post_id] = {
+          ...poll,
+          poll_options: options.sort((a: any, b: any) => a.sort_order - b.sort_order),
+          user_voted_option_id: voteMap.get(poll.id) ?? null,
+          total_votes: totalVotes,
+        };
+      }
+    }
+  }
+
   const enrichedPosts = (posts ?? []).map((p: any) => ({
     ...p,
     user_has_liked: likedPostIds.includes(p.id),
+    user_has_bookmarked: bookmarkedPostIds.includes(p.id),
+    post_poll: pollsByPostId[p.id] ?? null,
   }));
 
   // ── Right sidebar: pending friend requests (3) ──
