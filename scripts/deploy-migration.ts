@@ -7,8 +7,8 @@ async function run() {
   const client = new Client({
     host: "db.glvuyedwuzwkdocrcpng.supabase.co",
     port: 5432,
-    user: "cli_login_postgres",
-    password: "yEspVvInygUlEfWIJVvgvApaJhuHiFnb",
+    user: "postgres",
+    password: "Je$ui$nea4ng3rs",
     database: "postgres",
     ssl: { rejectUnauthorized: false },
   });
