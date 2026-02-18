@@ -26,7 +26,7 @@ export default async function AdminLayout({
   if (profile?.role !== "admin") redirect("/matches");
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-background">
+    <div className="flex flex-col md:flex-row min-h-screen">
       <AdminSidebar />
       <main className="flex-1 p-4 md:p-8 overflow-auto">{children}</main>
     </div>

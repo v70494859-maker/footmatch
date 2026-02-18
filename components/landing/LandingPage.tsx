@@ -15,9 +15,9 @@ export default function LandingPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-background/80 backdrop-blur-sm border-b border-surface-800 sticky top-0 z-50">
+      <header className="bg-surface-950/60 backdrop-blur-2xl border-b border-white/[0.04] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <Logo variant="full" />
           <div className="flex items-center gap-3">

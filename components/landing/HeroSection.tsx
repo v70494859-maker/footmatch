@@ -8,9 +8,13 @@ export default function HeroSection() {
 
   return (
     <section className="relative py-24 lg:py-36 overflow-hidden">
-      {/* Background glow effect */}
+      {/* Background glow effects */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-pitch-500/5 blur-3xl pointer-events-none"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-pitch-500/8 blur-3xl pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[200px] rounded-full bg-pitch-400/5 blur-2xl pointer-events-none"
         aria-hidden="true"
       />
 
@@ -39,7 +43,7 @@ export default function HeroSection() {
         <div className="mt-10 flex flex-col items-center gap-3">
           <Link
             href="/login"
-            className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-pitch-500 text-white font-semibold text-sm hover:bg-pitch-400 transition-colors shadow-lg shadow-pitch-500/20"
+            className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-pitch-500 text-white font-semibold text-sm hover:bg-pitch-400 transition-all shadow-lg shadow-pitch-500/30 hover:shadow-xl hover:shadow-pitch-500/40"
           >
             {t.hero.cta}
             <svg

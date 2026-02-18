@@ -13,7 +13,7 @@ export default function TopBar() {
   const pageTitle = getPageTitle(pathname, t);
 
   return (
-    <header className="lg:hidden sticky top-0 z-40 bg-surface-950/80 backdrop-blur-xl border-b border-surface-800 px-4 py-3">
+    <header className="lg:hidden sticky top-0 z-40 bg-surface-950/60 backdrop-blur-2xl border-b border-white/[0.04] px-4 py-3">
       <div className="flex items-center justify-between max-w-5xl mx-auto">
         <Logo variant="full" />
         {pageTitle && (

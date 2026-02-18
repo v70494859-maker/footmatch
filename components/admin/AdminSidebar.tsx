@@ -62,7 +62,7 @@ export default function AdminSidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-56 shrink-0 bg-surface-900 border-r border-surface-800 min-h-screen">
+      <aside className="hidden md:flex flex-col w-56 shrink-0 bg-surface-900/60 backdrop-blur-2xl border-r border-white/[0.04] min-h-screen">
         <div className="px-4 py-5 border-b border-surface-800">
           <h2 className="text-sm font-bold text-pitch-400 uppercase tracking-wider">Admin</h2>
         </div>
@@ -112,7 +112,7 @@ export default function AdminSidebar() {
       </aside>
 
       {/* Mobile top nav */}
-      <div className="md:hidden flex items-center gap-1 px-2 py-2 bg-surface-900 border-b border-surface-800 overflow-x-auto">
+      <div className="md:hidden flex items-center gap-1 px-2 py-2 bg-surface-900/60 backdrop-blur-2xl border-b border-white/[0.04] overflow-x-auto">
         {navItems.map((item) => {
           const isActive =
             item.href === "/admin"

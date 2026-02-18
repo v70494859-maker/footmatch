@@ -152,7 +152,7 @@ export default function BottomNav({ role }: BottomNavProps) {
   const items = navItemsByRole[role];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-surface-950/80 backdrop-blur-xl border-t border-surface-800">
+    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-surface-950/60 backdrop-blur-2xl border-t border-white/[0.04]">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto pb-[env(safe-area-inset-bottom)]">
         {items.map((item) => {
           const active = isActive(pathname, item.href);

@@ -163,7 +163,7 @@ export default function Sidebar({ role }: SidebarProps) {
   const items = navItemsByRole[role];
 
   return (
-    <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-950 border-r border-surface-800 min-h-screen">
+    <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-950/70 backdrop-blur-2xl border-r border-white/[0.04] min-h-screen">
       <div className="px-5 py-5 flex items-center justify-between">
         <Logo variant="full" />
         <NotificationBell align="left" />

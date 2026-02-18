@@ -12,7 +12,7 @@ export default function OperatorOnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center px-4 py-8">
       <div className="w-full max-w-lg">
         <StepProgress />
         {children}

@@ -22,9 +22,9 @@ const tierBorderColors: Record<BadgeTier, string> = {
 };
 
 const tierPillColors: Record<BadgeTier, string> = {
-  bronze: "bg-amber-700/20 text-amber-700",
-  silver: "bg-surface-300/20 text-surface-300",
-  gold: "bg-amber-400/20 text-amber-400",
+  bronze: "fm-badge-bronze",
+  silver: "fm-badge-silver",
+  gold: "fm-badge-gold",
 };
 
 export default function BadgeCard({ definition, unlocked, progress }: BadgeCardProps) {

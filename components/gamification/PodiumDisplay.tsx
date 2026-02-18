@@ -145,10 +145,13 @@ function PodiumSlot({
 
       {/* Pedestal */}
       <div
-        className={`${pedestalHeight} w-full mt-2 rounded-t-lg ${accentBg}/15 border border-b-0 ${accentBg.replace(
-          "bg-",
-          "border-"
-        )}/20 flex items-center justify-center`}
+        className={`${pedestalHeight} w-full mt-2 rounded-t-lg flex items-center justify-center ${
+          rank === 1
+            ? "bg-gradient-to-b from-amber-400/20 via-amber-400/10 to-amber-400/5 border border-b-0 border-amber-400/20"
+            : rank === 2
+            ? "bg-gradient-to-b from-surface-300/15 via-surface-300/8 to-surface-300/3 border border-b-0 border-surface-300/15"
+            : "bg-gradient-to-b from-amber-700/15 via-amber-700/8 to-amber-700/3 border border-b-0 border-amber-700/15"
+        }`}
       >
         <span className={`text-2xl font-black ${accentColor}`}>{rank}</span>
       </div>

@@ -27,7 +27,7 @@ export default function HowItWorksSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 bg-surface-950">
+    <section className="py-20 bg-surface-950/80">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-14">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">

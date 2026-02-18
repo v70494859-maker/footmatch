@@ -4,7 +4,7 @@ import BottomNav from "@/components/layout/BottomNav";
 
 export default function PlayerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen">
       <Sidebar role="player" />
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar />

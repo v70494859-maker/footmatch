@@ -14,7 +14,7 @@ export default async function OperatorLayout({ children }: { children: React.Rea
   if (!profile || profile.role !== "operator") redirect("/matches");
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen">
       <Sidebar role="operator" />
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar />

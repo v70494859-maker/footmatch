@@ -15,15 +15,15 @@ const sizeClasses: Record<"sm" | "md" | "lg", string> = {
 
 function getLevelStyle(level: number): string {
   if (level >= 8) {
-    return "bg-gradient-to-br from-amber-500 to-red-500 text-white";
+    return "bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-600 text-surface-950 shadow-lg shadow-amber-500/25";
   }
   if (level >= 6) {
-    return "bg-amber-500 text-surface-950";
+    return "bg-gradient-to-br from-amber-500 via-amber-400 to-amber-600 text-surface-950 shadow-md shadow-amber-500/20";
   }
   if (level >= 4) {
-    return "bg-pitch-500 text-white";
+    return "bg-gradient-to-br from-surface-300 via-surface-200 to-surface-400 text-surface-900 shadow-md shadow-surface-300/20";
   }
-  return "bg-surface-600 text-surface-100";
+  return "bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800 text-amber-100";
 }
 
 export default function LevelBadge({ level, size = "md" }: LevelBadgeProps) {
