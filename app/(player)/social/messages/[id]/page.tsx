@@ -49,8 +49,7 @@ export default async function ChatRoute({
   const { count: totalCount } = await supabase
     .from("direct_messages")
     .select("id", { count: "exact", head: true })
-    .eq("conversation_id", id)
-    .is("deleted_at", null);
+    .eq("conversation_id", id);
 
   // Fetch initial messages (last 50, ascending order)
   const { data: messages } = await supabase
@@ -59,7 +58,6 @@ export default async function ChatRoute({
       "*, sender:profiles!direct_messages_sender_id_fkey(id, first_name, last_name, avatar_url)"
     )
     .eq("conversation_id", id)
-    .is("deleted_at", null)
     .order("created_at", { ascending: true })
     .limit(50);
 

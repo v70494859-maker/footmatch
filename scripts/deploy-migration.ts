@@ -2,6 +2,8 @@ import { Client } from "pg";
 import * as fs from "fs";
 
 async function run() {
+  const migrationFile = process.argv[2] || "supabase/migrations/20260224_messaging_improvements.sql";
+
   const client = new Client({
     host: "db.glvuyedwuzwkdocrcpng.supabase.co",
     port: 5432,
@@ -17,54 +19,37 @@ async function run() {
   await client.query("SET ROLE postgres;");
   console.log("SET ROLE postgres");
 
-  const sql = fs.readFileSync("supabase/migrations/20260223_anti_noshow.sql", "utf8");
+  const sql = fs.readFileSync(migrationFile, "utf8");
+  console.log(`\nRunning migration: ${migrationFile}`);
 
-  // Execute statement by statement for better error reporting
-  const statements = sql
-    .split(/;(?:\s*\n)/)
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0 && !s.startsWith("--"));
-
-  for (let i = 0; i < statements.length; i++) {
-    const stmt = statements[i] + ";";
-    const preview = stmt.substring(0, 80).replace(/\n/g, " ");
-    try {
-      await client.query(stmt);
-      console.log(`[${i + 1}/${statements.length}] OK: ${preview}...`);
-    } catch (e: any) {
-      console.error(`[${i + 1}/${statements.length}] FAIL: ${e.message.substring(0, 150)}`);
-    }
+  try {
+    await client.query(sql);
+    console.log("Migration executed successfully!");
+  } catch (e: any) {
+    console.error(`Migration failed: ${e.message}`);
   }
 
-  // Verify
-  const { rows: cols } = await client.query(`
+  // Verify messaging columns
+  const { rows: dmCols } = await client.query(`
     SELECT column_name FROM information_schema.columns
-    WHERE table_name = 'player_career_stats' AND column_name IN ('no_show_count', 'late_cancel_count')
+    WHERE table_name = 'direct_messages' AND column_name IN ('deleted_at', 'media_duration')
     ORDER BY column_name
   `);
   console.log(`\n=== Verification ===`);
-  console.log(`player_career_stats new columns: ${cols.map(c => c.column_name).join(", ") || "MISSING"}`);
+  console.log(`direct_messages new columns: ${dmCols.map(c => c.column_name).join(", ") || "MISSING"}`);
 
-  const { rows: regCols } = await client.query(`
-    SELECT column_name FROM information_schema.columns
-    WHERE table_name = 'match_registrations' AND column_name IN ('canceled_at', 'standby_position')
-    ORDER BY column_name
+  const { rows: fns } = await client.query(`
+    SELECT routine_name FROM information_schema.routines
+    WHERE routine_name IN ('get_unread_conversation_count', 'notify_new_direct_message')
+    ORDER BY routine_name
   `);
-  console.log(`match_registrations new columns: ${regCols.map(c => c.column_name).join(", ") || "MISSING"}`);
+  console.log(`Functions: ${fns.map(f => f.routine_name).join(", ") || "MISSING"}`);
 
-  const { rows: profCols } = await client.query(`
-    SELECT column_name FROM information_schema.columns
-    WHERE table_name = 'profiles' AND column_name IN ('cancel_tokens', 'cancel_tokens_reset_at')
-    ORDER BY column_name
+  const { rows: trgs } = await client.query(`
+    SELECT trigger_name FROM information_schema.triggers
+    WHERE trigger_name = 'trg_notify_direct_message'
   `);
-  console.log(`profiles new columns: ${profCols.map(c => c.column_name).join(", ") || "MISSING"}`);
-
-  const { rows: enumVals } = await client.query(`
-    SELECT enumlabel FROM pg_enum
-    WHERE enumtypid = (SELECT oid FROM pg_type WHERE typname = 'registration_status_enum')
-    ORDER BY enumsortorder
-  `);
-  console.log(`registration_status_enum values: ${enumVals.map(v => v.enumlabel).join(", ")}`);
+  console.log(`Triggers: ${trgs.map(t => t.trigger_name).join(", ") || "MISSING"}`);
 
   await client.end();
 }

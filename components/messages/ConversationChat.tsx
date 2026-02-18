@@ -201,7 +201,6 @@ export default function ConversationChat({
       )
       .eq("conversation_id", conversationId)
       .lt("created_at", messages[0]?.created_at ?? new Date().toISOString())
-      .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .limit(PAGE_SIZE);
 

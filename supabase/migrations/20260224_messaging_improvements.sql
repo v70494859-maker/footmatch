@@ -1,9 +1,26 @@
 -- ============================================================
--- Messaging improvements: unread count fn, notification trigger, soft-delete
+-- Messaging improvements: unread count fn, notification trigger, soft-delete, media_duration
 -- ============================================================
 
--- 1. Unread conversation count function
--- Replaces broken PostgREST cross-column filter
+-- 1. Add missing media_duration column for voice messages
+ALTER TABLE direct_messages ADD COLUMN IF NOT EXISTS media_duration INTEGER;
+
+-- 2. Soft-delete column on direct_messages
+ALTER TABLE direct_messages ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
+
+-- 3. Allow sender to soft-delete their own messages
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE policyname = 'Users can soft-delete own messages' AND tablename = 'direct_messages'
+  ) THEN
+    CREATE POLICY "Users can soft-delete own messages"
+      ON direct_messages FOR UPDATE
+      USING (sender_id = auth.uid())
+      WITH CHECK (sender_id = auth.uid());
+  END IF;
+END $$;
+
+-- 4. Unread conversation count function
 CREATE OR REPLACE FUNCTION get_unread_conversation_count(p_user_id UUID)
 RETURNS INTEGER
 LANGUAGE sql
@@ -15,19 +32,10 @@ AS $$
   JOIN conversations c ON c.id = cp.conversation_id
   WHERE cp.user_id = p_user_id
     AND c.last_message_at IS NOT NULL
-    AND (cp.last_read_at IS NULL OR cp.last_read_at < c.last_message_at);
+    AND (cp.last_read_at IS NULL OR cp.last_read_at < c.last_message_at)
 $$;
 
--- 2. Soft-delete column on direct_messages
-ALTER TABLE direct_messages ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
-
--- Allow sender to soft-delete their own messages
-CREATE POLICY "Users can soft-delete own messages"
-  ON direct_messages FOR UPDATE
-  USING (sender_id = auth.uid())
-  WITH CHECK (sender_id = auth.uid());
-
--- 3. Notification trigger for new direct messages
+-- 5. Notification trigger for new direct messages
 CREATE OR REPLACE FUNCTION notify_new_direct_message()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -52,9 +60,10 @@ BEGIN
     AND cp.muted = false;
 
   RETURN NEW;
-END;
+END
 $$;
 
+DROP TRIGGER IF EXISTS trg_notify_direct_message ON direct_messages;
 CREATE TRIGGER trg_notify_direct_message
   AFTER INSERT ON direct_messages
   FOR EACH ROW

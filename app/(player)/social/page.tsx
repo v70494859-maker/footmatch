@@ -40,11 +40,16 @@ export default async function SocialPage() {
     .eq("addressee_id", user.id)
     .eq("status", "pending");
 
-  const { data: unreadResult } = await supabase.rpc(
-    "get_unread_conversation_count",
-    { p_user_id: user.id }
-  );
-  const unreadMessages = unreadResult ?? 0;
+  let unreadMessages = 0;
+  try {
+    const { data: unreadResult } = await supabase.rpc(
+      "get_unread_conversation_count",
+      { p_user_id: user.id }
+    );
+    unreadMessages = unreadResult ?? 0;
+  } catch {
+    // Function may not exist yet if migration not applied
+  }
 
   const { count: matchesPlayed } = await supabase
     .from("match_registrations")
