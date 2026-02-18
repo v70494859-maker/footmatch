@@ -45,6 +45,13 @@ export default async function ChatRoute({
 
   if (!conversation) notFound();
 
+  // Count total messages for pagination
+  const { count: totalCount } = await supabase
+    .from("direct_messages")
+    .select("id", { count: "exact", head: true })
+    .eq("conversation_id", id)
+    .is("deleted_at", null);
+
   // Fetch initial messages (last 50, ascending order)
   const { data: messages } = await supabase
     .from("direct_messages")
@@ -52,6 +59,7 @@ export default async function ChatRoute({
       "*, sender:profiles!direct_messages_sender_id_fkey(id, first_name, last_name, avatar_url)"
     )
     .eq("conversation_id", id)
+    .is("deleted_at", null)
     .order("created_at", { ascending: true })
     .limit(50);
 
@@ -68,6 +76,7 @@ export default async function ChatRoute({
       userId={user.id}
       conversation={conversation}
       initialMessages={messages ?? []}
+      totalCount={totalCount ?? undefined}
     />
   );
 }

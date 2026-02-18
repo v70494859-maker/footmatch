@@ -8,11 +8,15 @@ import VoiceRecorder from "@/components/chat/VoiceRecorder";
 interface ConversationInputProps {
   conversationId: string;
   currentUserId: string;
+  replyToId?: string | null;
+  onReplySent?: () => void;
 }
 
 export default function ConversationInput({
   conversationId,
   currentUserId,
+  replyToId,
+  onReplySent,
 }: ConversationInputProps) {
   const { t } = useTranslation();
   const supabase = createClient();
@@ -31,8 +35,10 @@ export default function ConversationInput({
         sender_id: currentUserId,
         type: "text",
         content: trimmed,
+        ...(replyToId ? { reply_to_id: replyToId } : {}),
       });
       setText("");
+      onReplySent?.();
     } finally {
       setSending(false);
     }

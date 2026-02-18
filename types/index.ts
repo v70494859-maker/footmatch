@@ -544,6 +544,7 @@ export interface DirectMessage {
   media_url: string | null;
   media_duration: number | null;
   reply_to_id: string | null;
+  deleted_at: string | null;
   created_at: string;
 }
 

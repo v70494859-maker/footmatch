@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -45,19 +45,30 @@ interface ConversationChatProps {
   userId: string;
   conversation: ConversationData;
   initialMessages: DirectMessageWithSender[];
+  totalCount?: number;
 }
+
+const PAGE_SIZE = 50;
 
 export default function ConversationChat({
   conversationId,
   userId,
   conversation,
   initialMessages,
+  totalCount,
 }: ConversationChatProps) {
   const { t } = useTranslation();
   const supabase = createClient();
   const [messages, setMessages] =
     useState<DirectMessageWithSender[]>(initialMessages);
+  const [replyTo, setReplyTo] = useState<DirectMessageWithSender | null>(null);
+  const [contextMenu, setContextMenu] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(
+    totalCount ? initialMessages.length < totalCount : initialMessages.length >= PAGE_SIZE
+  );
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const profileCache = useRef<Map<string, Profile>>(new Map());
 
   // Determine display name and other participant
@@ -82,7 +93,6 @@ export default function ConversationChat({
         profileCache.current.set(msg.sender_id, msg.sender as Profile);
       }
     }
-    // Also seed from participant profiles
     for (const p of conversation.conversation_participants) {
       if (p.profile) {
         profileCache.current.set(p.user_id, p.profile as Profile);
@@ -90,12 +100,12 @@ export default function ConversationChat({
     }
   }, [initialMessages, conversation.conversation_participants]);
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on mount and new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages.length]);
 
-  // Realtime subscription for new messages
+  // Realtime subscription for new messages + deletions
   useEffect(() => {
     const channel = supabase
       .channel(`dm:${conversationId}`)
@@ -110,7 +120,6 @@ export default function ConversationChat({
         async (payload) => {
           const newMsg = payload.new as DirectMessage;
 
-          // Fetch sender profile (use cache if available)
           let sender = profileCache.current.get(newMsg.sender_id);
           if (!sender) {
             const { data } = await supabase
@@ -134,13 +143,32 @@ export default function ConversationChat({
             return [...prev, msgWithSender];
           });
 
-          // Update last_read_at silently
+          // Update last_read_at
           supabase
             .from("conversation_participants")
             .update({ last_read_at: new Date().toISOString() })
             .eq("conversation_id", conversationId)
             .eq("user_id", userId)
             .then(() => {});
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "direct_messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
+        (payload) => {
+          const updated = payload.new as DirectMessage;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === updated.id
+                ? { ...m, deleted_at: updated.deleted_at }
+                : m
+            )
+          );
         }
       )
       .subscribe();
@@ -150,10 +178,81 @@ export default function ConversationChat({
     };
   }, [conversationId, userId, supabase]);
 
+  // Close context menu on click outside
+  useEffect(() => {
+    if (!contextMenu) return;
+    const close = () => setContextMenu(null);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, [contextMenu]);
+
+  // Load older messages
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+
+    const container = scrollContainerRef.current;
+    const prevScrollHeight = container?.scrollHeight ?? 0;
+
+    const { data } = await supabase
+      .from("direct_messages")
+      .select(
+        "*, sender:profiles!direct_messages_sender_id_fkey(id, first_name, last_name, avatar_url)"
+      )
+      .eq("conversation_id", conversationId)
+      .lt("created_at", messages[0]?.created_at ?? new Date().toISOString())
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (data && data.length > 0) {
+      const older = data.reverse() as DirectMessageWithSender[];
+      for (const msg of older) {
+        if (msg.sender) {
+          profileCache.current.set(msg.sender_id, msg.sender as Profile);
+        }
+      }
+      setMessages((prev) => [...older, ...prev]);
+      setHasMore(data.length >= PAGE_SIZE);
+
+      // Preserve scroll position
+      requestAnimationFrame(() => {
+        if (container) {
+          container.scrollTop = container.scrollHeight - prevScrollHeight;
+        }
+      });
+    } else {
+      setHasMore(false);
+    }
+
+    setLoadingMore(false);
+  }, [loadingMore, hasMore, messages, conversationId, supabase]);
+
+  // Delete message (soft)
+  async function handleDelete(msgId: string) {
+    setContextMenu(null);
+    await supabase
+      .from("direct_messages")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", msgId)
+      .eq("sender_id", userId);
+  }
+
+  // Find replied-to message text for display
+  function getReplyPreview(replyToId: string | null): string | null {
+    if (!replyToId) return null;
+    const original = messages.find((m) => m.id === replyToId);
+    if (!original) return null;
+    if (original.deleted_at) return t.social.messages.messageDeleted;
+    if (original.type === "image") return t.social.messages.image;
+    if (original.type === "voice") return t.social.messages.voice;
+    return original.content?.slice(0, 80) ?? null;
+  }
+
   return (
     <div className="flex flex-col h-[100dvh]">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-surface-800 px-4 py-3">
+      <div className="sticky top-0 z-10 bg-surface-950/60 backdrop-blur-2xl border-b border-white/[0.04] px-4 py-3">
         <div className="flex items-center gap-3">
           <Link
             href="/social/messages"
@@ -206,8 +305,7 @@ export default function ConversationChat({
             </h1>
             {conversation.type === "group" && (
               <p className="text-xs text-surface-500">
-                {participantCount}{" "}
-                {participantCount !== 1 ? "participants" : "participant"}
+                {participantCount} {t.social.messages.participants}
               </p>
             )}
           </div>
@@ -215,7 +313,28 @@ export default function ConversationChat({
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
+      >
+        {/* Load more */}
+        {hasMore && (
+          <div className="flex justify-center py-2">
+            <button
+              type="button"
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="text-xs text-surface-400 hover:text-foreground transition-colors disabled:opacity-50"
+            >
+              {loadingMore ? (
+                <div className="w-4 h-4 border-2 border-surface-400 border-t-transparent rounded-full animate-spin mx-auto" />
+              ) : (
+                t.social.messages.loadMore
+              )}
+            </button>
+          </div>
+        )}
+
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <svg
@@ -239,6 +358,8 @@ export default function ConversationChat({
           messages.map((msg) => {
             const isOwn = msg.sender_id === userId;
             const sender = msg.sender;
+            const isDeleted = !!msg.deleted_at;
+            const replyPreview = getReplyPreview(msg.reply_to_id);
 
             return (
               <div
@@ -258,47 +379,126 @@ export default function ConversationChat({
                 )}
 
                 {/* Bubble */}
-                <div
-                  className={`max-w-[75%] rounded-2xl px-3 py-2 ${
-                    isOwn
-                      ? "bg-pitch-500/20 rounded-tr-md"
-                      : "bg-surface-800 rounded-tl-md"
-                  }`}
-                >
-                  {/* Sender name (others only, in group or direct) */}
-                  {!isOwn && sender && (
-                    <p className="text-[10px] font-semibold text-pitch-400 mb-0.5">
-                      {sender.first_name} {sender.last_name}
-                    </p>
+                <div className="relative max-w-[75%] group">
+                  {/* Reply context */}
+                  {replyPreview && (
+                    <div
+                      className={`text-[10px] px-2.5 py-1 mb-0.5 rounded-lg bg-surface-800/50 text-surface-400 truncate border-l-2 ${
+                        isOwn ? "border-pitch-500/40" : "border-surface-600"
+                      }`}
+                    >
+                      {replyPreview}
+                    </div>
                   )}
 
-                  {/* Text message */}
-                  {msg.type === "text" && msg.content && (
-                    <p className="text-sm text-foreground whitespace-pre-wrap break-words">
-                      {msg.content}
-                    </p>
-                  )}
-
-                  {/* Image message */}
-                  {msg.type === "image" && msg.media_url && (
-                    <DmImage url={msg.media_url} />
-                  )}
-
-                  {/* Voice message */}
-                  {msg.type === "voice" && msg.media_url && (
-                    <DmVoicePlayer url={msg.media_url} duration={msg.media_duration} />
-                  )}
-
-                  {/* Timestamp */}
-                  <p
-                    className={`text-[10px] mt-1 ${
-                      isOwn
-                        ? "text-pitch-400/60 text-right"
-                        : "text-surface-500"
+                  <div
+                    className={`rounded-2xl px-3 py-2 ${
+                      isDeleted
+                        ? "bg-surface-800/40"
+                        : isOwn
+                          ? "bg-pitch-500/20 rounded-tr-md"
+                          : "bg-surface-800 rounded-tl-md"
                     }`}
                   >
-                    {formatChatTime(msg.created_at)}
-                  </p>
+                    {/* Sender name (others only) */}
+                    {!isOwn && sender && !isDeleted && (
+                      <p className="text-[10px] font-semibold text-pitch-400 mb-0.5">
+                        {sender.first_name} {sender.last_name}
+                      </p>
+                    )}
+
+                    {isDeleted ? (
+                      <p className="text-sm text-surface-500 italic">
+                        {t.social.messages.messageDeleted}
+                      </p>
+                    ) : (
+                      <>
+                        {/* Text message */}
+                        {msg.type === "text" && msg.content && (
+                          <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+                            {msg.content}
+                          </p>
+                        )}
+
+                        {/* Image message */}
+                        {msg.type === "image" && msg.media_url && (
+                          <DmImage url={msg.media_url} />
+                        )}
+
+                        {/* Voice message */}
+                        {msg.type === "voice" && msg.media_url && (
+                          <DmVoicePlayer
+                            url={msg.media_url}
+                            duration={msg.media_duration}
+                          />
+                        )}
+                      </>
+                    )}
+
+                    {/* Timestamp */}
+                    <p
+                      className={`text-[10px] mt-1 ${
+                        isOwn
+                          ? "text-pitch-400/60 text-right"
+                          : "text-surface-500"
+                      }`}
+                    >
+                      {formatChatTime(msg.created_at)}
+                    </p>
+                  </div>
+
+                  {/* Actions (reply + delete) */}
+                  {!isDeleted && (
+                    <div
+                      className={`absolute top-0 ${
+                        isOwn ? "left-0 -translate-x-full" : "right-0 translate-x-full"
+                      } hidden group-hover:flex items-center gap-0.5 px-1`}
+                    >
+                      {/* Reply */}
+                      <button
+                        type="button"
+                        onClick={() => setReplyTo(msg)}
+                        className="p-1 text-surface-500 hover:text-foreground transition-colors rounded"
+                        title={t.social.messages.reply}
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                        </svg>
+                      </button>
+                      {/* Delete (own messages only) */}
+                      {isOwn && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setContextMenu(contextMenu === msg.id ? null : msg.id);
+                          }}
+                          className="p-1 text-surface-500 hover:text-danger-500 transition-colors rounded"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Delete confirmation */}
+                  {contextMenu === msg.id && (
+                    <div
+                      className={`absolute z-20 ${
+                        isOwn ? "right-0" : "left-0"
+                      } top-full mt-1 bg-surface-800 border border-surface-700 rounded-lg shadow-lg overflow-hidden`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(msg.id)}
+                        className="flex items-center gap-2 px-3 py-2 text-xs text-danger-500 hover:bg-surface-700 transition-colors whitespace-nowrap"
+                      >
+                        {t.social.messages.deleteMessage}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -307,10 +507,43 @@ export default function ConversationChat({
         <div ref={bottomRef} />
       </div>
 
+      {/* Reply preview banner */}
+      {replyTo && (
+        <div className="px-3 pt-2 border-t border-surface-800 bg-surface-900/80">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/60 border-l-2 border-pitch-500/50">
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-semibold text-pitch-400">
+                {replyTo.sender_id === userId
+                  ? t.social.messages.you
+                  : `${replyTo.sender?.first_name ?? ""}`}
+              </p>
+              <p className="text-xs text-surface-400 truncate">
+                {replyTo.type === "image"
+                  ? t.social.messages.image
+                  : replyTo.type === "voice"
+                    ? t.social.messages.voice
+                    : replyTo.content?.slice(0, 60)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setReplyTo(null)}
+              className="p-0.5 text-surface-500 hover:text-foreground transition-colors shrink-0"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <ConversationInput
         conversationId={conversationId}
         currentUserId={userId}
+        replyToId={replyTo?.id ?? null}
+        onReplySent={() => setReplyTo(null)}
       />
     </div>
   );
@@ -345,7 +578,13 @@ function DmImage({ url }: { url: string }) {
   );
 }
 
-function DmVoicePlayer({ url, duration }: { url: string; duration: number | null }) {
+function DmVoicePlayer({
+  url,
+  duration,
+}: {
+  url: string;
+  duration: number | null;
+}) {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -395,12 +634,20 @@ function DmVoicePlayer({ url, duration }: { url: string; duration: number | null
         className="w-8 h-8 rounded-full bg-pitch-500/20 flex items-center justify-center shrink-0"
       >
         {playing ? (
-          <svg className="w-4 h-4 text-pitch-400" fill="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4 text-pitch-400"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
             <rect x="6" y="4" width="4" height="16" rx="1" />
             <rect x="14" y="4" width="4" height="16" rx="1" />
           </svg>
         ) : (
-          <svg className="w-4 h-4 text-pitch-400 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4 text-pitch-400 ml-0.5"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path d="M8 5v14l11-7z" />
           </svg>
         )}

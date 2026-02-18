@@ -37,8 +37,8 @@ export default function NewConversationModal({
       const { data, error } = await supabase.rpc(
         "get_or_create_direct_conversation",
         {
-          p_user_id: userId,
-          p_other_user_id: friendId,
+          user_a: userId,
+          user_b: friendId,
         }
       );
 

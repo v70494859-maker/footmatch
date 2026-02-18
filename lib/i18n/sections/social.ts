@@ -63,6 +63,8 @@ const social = {
         you: "Vous", online: "En ligne", offline: "Hors ligne",
         mute: "Couper les notifications", unmute: "Activer les notifications",
         image: "Image", voice: "Vocal",
+        participants: "participants", loadMore: "Charger les messages précédents",
+        messageDeleted: "Message supprimé", reply: "Répondre", deleteMessage: "Supprimer",
       },
       challenges: {
         title: "Défis", createChallenge: "Proposer un défi",
@@ -141,6 +143,8 @@ const social = {
         you: "You", online: "Online", offline: "Offline",
         mute: "Mute notifications", unmute: "Unmute notifications",
         image: "Image", voice: "Voice",
+        participants: "participants", loadMore: "Load older messages",
+        messageDeleted: "Message deleted", reply: "Reply", deleteMessage: "Delete",
       },
       challenges: {
         title: "Challenges", createChallenge: "Propose a challenge",
@@ -219,6 +223,8 @@ const social = {
         you: "Tú", online: "En línea", offline: "Desconectado",
         mute: "Silenciar notificaciones", unmute: "Activar notificaciones",
         image: "Imagen", voice: "Voz",
+        participants: "participantes", loadMore: "Cargar mensajes anteriores",
+        messageDeleted: "Mensaje eliminado", reply: "Responder", deleteMessage: "Eliminar",
       },
       challenges: {
         title: "Desafíos", createChallenge: "Proponer un desafío",

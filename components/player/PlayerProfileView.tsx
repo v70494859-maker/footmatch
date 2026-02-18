@@ -11,6 +11,7 @@ import Image from "next/image";
 import ProfileAvatar from "@/components/ui/ProfileAvatar";
 import SubscriptionGate from "@/components/ui/SubscriptionGate";
 import AddFriendButton from "@/components/social/AddFriendButton";
+import MessageButton from "@/components/player/MessageButton";
 
 interface PlayerProfileViewProps {
   profile: Profile;
@@ -149,11 +150,16 @@ export default function PlayerProfileView({
               </div>
             )}
             {currentUserId && profile.role === "player" && (
-              <AddFriendButton
-                targetUserId={profile.id}
-                currentUserId={currentUserId}
-                className="mt-2"
-              />
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <AddFriendButton
+                  targetUserId={profile.id}
+                  currentUserId={currentUserId}
+                />
+                <MessageButton
+                  targetUserId={profile.id}
+                  currentUserId={currentUserId}
+                />
+              </div>
             )}
             <p className="text-xs text-surface-500">
               Membre depuis{" "}

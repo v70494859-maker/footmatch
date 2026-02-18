@@ -40,12 +40,11 @@ export default async function SocialPage() {
     .eq("addressee_id", user.id)
     .eq("status", "pending");
 
-  const { count: unreadMessages } = await supabase
-    .from("conversation_participants")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .not("last_read_at", "is", null)
-    .filter("last_read_at", "lt", "last_message_at");
+  const { data: unreadResult } = await supabase.rpc(
+    "get_unread_conversation_count",
+    { p_user_id: user.id }
+  );
+  const unreadMessages = unreadResult ?? 0;
 
   const { count: matchesPlayed } = await supabase
     .from("match_registrations")
