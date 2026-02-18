@@ -1,6 +1,45 @@
 -- ============================================================
--- Messaging improvements: unread count fn, notification trigger, soft-delete, media_duration
+-- Messaging improvements: RLS fix, unread count fn, notification trigger, soft-delete, media_duration
 -- ============================================================
+
+-- 0. Fix infinite recursion in conversation_participants SELECT policy
+-- Create a SECURITY DEFINER helper to break the recursion cycle
+CREATE OR REPLACE FUNCTION is_conversation_participant(conv_id UUID, uid UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM conversation_participants
+    WHERE conversation_id = conv_id AND user_id = uid
+  )
+$$;
+
+-- Replace the recursive policy with one using the helper function
+DROP POLICY IF EXISTS "Participants can view conversation members" ON conversation_participants;
+CREATE POLICY "Participants can view conversation members"
+  ON conversation_participants FOR SELECT
+  USING (is_conversation_participant(conversation_id, auth.uid()));
+
+-- Also fix conversations and direct_messages policies to use the helper
+DROP POLICY IF EXISTS "Participants can view conversations" ON conversations;
+CREATE POLICY "Participants can view conversations"
+  ON conversations FOR SELECT
+  USING (is_conversation_participant(id, auth.uid()));
+
+DROP POLICY IF EXISTS "Participants can view messages" ON direct_messages;
+CREATE POLICY "Participants can view messages"
+  ON direct_messages FOR SELECT
+  USING (is_conversation_participant(conversation_id, auth.uid()));
+
+DROP POLICY IF EXISTS "Participants can send messages" ON direct_messages;
+CREATE POLICY "Participants can send messages"
+  ON direct_messages FOR INSERT
+  WITH CHECK (
+    auth.uid() = sender_id
+    AND is_conversation_participant(conversation_id, auth.uid())
+  );
 
 -- 1. Add missing media_duration column for voice messages
 ALTER TABLE direct_messages ADD COLUMN IF NOT EXISTS media_duration INTEGER;
